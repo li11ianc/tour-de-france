@@ -1,0 +1,27 @@
+---
+title: "Exam 1"
+author: "[Name]"
+date: "03-06-20"
+output: 
+  html_document:
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA, 
+                      message = FALSE, warning = FALSE)
+```
+
+## Packages
+
+```{r packages}
+library(tidyverse)
+```
+
+## Data
+
+```{r data}
+tdf <- readRDS(file = "data/tdf_2019.rds")
+```
+
+
