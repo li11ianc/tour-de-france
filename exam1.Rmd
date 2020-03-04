@@ -108,10 +108,17 @@ people <- lapply(tdf[[2]]$stage$competitors, data.frame) %>%
 ```
 
 ```{r}
-data <- merge(people, stage_info, by = "description", all = TRUE) 
+team_info <- lapply(tdf[[2]]$stage$teams, data.frame) %>%
+  bind_rows() %>%
+  rename(team.id = id)
+```
+
+```{r}
+people_teams <- full_join(people, team_info, by = "team.id")
+data <- full_join(people_teams, stage_info, by = "description") 
 data
 data %>%
-  select(stage = description, rider_name = name, rider_nat = nationality, team_name = team.name, team_nat = team.nationality, dep_city = departure_city, arr_city = arrival_city, classification, distance, start_date = scheduled)
+  select(stage = description, rider_name = name.x, rider_nat = nationality.x, team_name = team.name, team_nat = team.nationality, dep_city = departure_city, arr_city = arrival_city, classification, distance, start_date = scheduled)
 ```
 
 ```{r}
