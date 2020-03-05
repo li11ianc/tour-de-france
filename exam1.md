@@ -85,8 +85,6 @@ saveRDS(tdf_clean, "results/tdf_clean.rds")
 
 #### Part 1
 
-Fix the time variables (time, young_rider_time) in your tidy data frame so each cyclist's stage time is given rather than just the winner's time and time back from the winner. For example, rather than "04:22.47", "+00:00.00", "+00:00.00", "+00:00.00", ... in stage 1, it should be changed to "04:22.47", "04:22.47", "04:22.47", "04:22.47", .... You may keep the result as type character or change it to a reasonable date/time data type.
-
 
 ```r
 tdf_clean %>%
@@ -292,6 +290,169 @@ tdf_clean <- tdf_clean %>%
          young_rider_time = round(seconds_to_period(young_rider_time), 2))
 ```
 
+#### Part 2
+
+
+```r
+mountains <- tdf_clean %>%
+  select(stage, rider_name, climb_pts) %>%
+  mutate(climb_pts = case_when(
+    is.na(climb_pts) ~ 0,
+    TRUE ~ climb_pts
+  ),
+  stage = str_c("stage_", stage))
+
+mountains <- pivot_wider(mountains, id_cols = rider_name, names_from = stage, values_from = climb_pts)
+```
+
+
+```r
+mountains <- mountains %>%
+  mutate(total_climb_pts = select(., stage_1:stage_21) %>% 
+           rowSums()) %>%
+  arrange(desc(total_climb_pts)) %>%
+  head(30)
+
+rank <- c(1:30)
+
+mountain_king <- cbind(mountains, rank)
+mountain_king <- mountain_king[,c(1, 24, 2:23)]
+```
+
+
+```r
+mountain_king %>%
+  mutate(rank = as.numeric(rank))
+```
+
+```
+            rider_name rank stage_1 stage_2 stage_3 stage_4 stage_5 stage_6
+1       Bardet, Romain    1       0       0       0       0       0       0
+2         Bernal, Egan    2       0       0       0       0       0       0
+3         Wellens, Tim    3       0       0       7       0      10      26
+4      Caruso, Damiano    4       0       0       0       0       0       0
+5     Nibali, Vincenzo    5       0       0       0       0       0       0
+6         Yates, Simon    6       0       0       0       0       0       0
+7      Quintana, Nairo    7       0       0       1       0       0       0
+8       Pinot, Thibaut    8       0       0       0       0       0       2
+9     Lutsenko, Alexey    9       0       0       0       0       0       0
+10  Kruijswijk, Steven   10       0       0       0       0       0       0
+11  Landa Meana, Mikel   11       0       0       0       0       0       0
+12   Buchmann, Emanuel   12       0       0       0       0       0       0
+13    De Gendt, Thomas   13       0       0       0       0       0       8
+14     Thomas, Geraint   14       0       0       0       0       0       4
+15 Alaphilippe, Julian   15       0       0       1       0       0       1
+16      Woods, Michael   16       0       0       0       0       0       0
+17     Ciccone, Giulio   17       0       0       0       0       0      30
+18 Valverde, Alejandro   18       0       0       0       0       0       0
+19       Benoot, Tiesj   19       0       0       0       0       0       0
+20    Meurisse, Xandro   20       2       0       1       0       3      21
+21     Bernard, Julien   21       0       0       0       0       0       2
+22     Barguil, Warren   22       0       0       0       0       0       0
+23      Kamna, Lennard   23       0       0       0       0       1       0
+24         Yates, Adam   24       0       0       0       0       0       0
+25     Uran, Rigoberto   25       0       0       0       0       0       0
+26    de Plus, Laurens   26       0       0       0       0       0       0
+27    Berhane, Natnael   27       0       0       0       0       0      13
+28      Geschke, Simon   28       0       0       0       0       0       0
+29      Pauwels, Serge   29       0       0       0       0       0       1
+30        Teuns, Dylan   30       0       0       0       0       0      13
+   stage_7 stage_8 stage_9 stage_10 stage_11 stage_12 stage_13 stage_14
+1        0       0       0        0        0        0        0        0
+2        0       0       0        0        0        0        0       16
+3        0       0       0        0        0       11        0       10
+4        0       0       0        0        0        0        0        0
+5        0       0       0        0        0        0        0        9
+6        0       0       0        0        0       10        0        0
+7        0       0       0        0        0        0        0        0
+8        0       0       0        0        0        0        0       40
+9        0       0       0        0        0        0        0        0
+10       0       0       0        0        0        0        0       24
+11       0       0       0        0        0        0        0       12
+12       0       0       0        0        0        0        0       20
+13       0      29       0        0        0        0        0        0
+14       0       0       0        0        0        0        0        4
+15       0       1       0        0        0        0        0       30
+16       0       0       0        0        0        0        0        0
+17       0       0       0        0        0        0        0        0
+18       0       0       0        0        0        0        0        0
+19       0       0      12        0        0        4        0        0
+20       0       0       0        0        0        0        0        0
+21       0       0       0        0        0        0        0        0
+22       0       0       0        0        0        0        0        0
+23       0       0       0        0        0        0        0        0
+24       0       0       0        0        0        0        0        0
+25       0       0       0        0        0        0        0        8
+26       0       0       0        0        0        0        0        0
+27       0       0       0        7        0        0        0        0
+28       0       0       0        0        0        0        0        0
+29       0       0       0        0        0       12        0        0
+30       0       0       0        0        0        0        0        0
+   stage_15 stage_16 stage_17 stage_18 stage_19 stage_20 stage_21
+1        18        0        0       68        0        0        0
+2         2        0        0        0       40       20        0
+3         0        0        0       10        0        0        1
+4         0        0        0       60        7        0        0
+5         3        0        0        0        7       40        0
+6        19        0        0        0       30        0        0
+7         1        0        0       56        0        0        0
+8         8        0        0        0        0        0        0
+9         5        0        0       40        0        0        0
+10        0        0        0        0       16        4        0
+11        6        0        0        0        0       24        0
+12        4        0        0        0        8        8        0
+13        0        0        1        0        0        0        0
+14        0        0        0        0       12       16        0
+15        0        0        0        0        0        0        0
+16        7        0        0       24        0        0        0
+17        0        0        0        0        0        0        0
+18        0        0        0        0        0       30        0
+19        0        0        0       12        0        0        0
+20        0        0        0        0        0        0        0
+21        0        0        0       24        0        0        0
+22        0        0        0        0       24        0        0
+23        1        0        0       20        0        0        0
+24        0        0        0       20        0        0        0
+25        0        0        0        0        0       12        0
+26        0        0        0        0       20        0        0
+27        0        0        0        0        0        0        0
+28       18        0        0        0        0        0        0
+29        0        0        0        4        0        0        0
+30        0        0        0        0        0        0        0
+   total_climb_pts
+1               86
+2               78
+3               75
+4               67
+5               59
+6               59
+7               58
+8               50
+9               45
+10              44
+11              42
+12              40
+13              38
+14              36
+15              33
+16              31
+17              30
+18              30
+19              28
+20              27
+21              26
+22              24
+23              22
+24              20
+25              20
+26              20
+27              20
+28              18
+29              17
+30              13
+```
+
+ Only include the top 30 climbers sorted by total_climb_points in your final data frame. You may decide how to account for ties. Explain your choice.
 
 ### References 
 
@@ -300,3 +461,7 @@ https://www.r-bloggers.com/using-dates-and-times-in-r/
 
 deparse thang
 https://stackoverflow.com/questions/14577412/how-to-convert-variable-object-name-into-string
+
+row sums
+https://stackoverflow.com/questions/29006056/efficiently-sum-across-multiple-columns-in-r
+
