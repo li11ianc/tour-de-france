@@ -76,7 +76,7 @@ messy_tdf <- messy_tdf %>%
          )
 
 tdf_clean <- messy_tdf %>%
-  select(-team_time, -team_rank)
+  select(-team_time, -team_rank, -dns, -dnf, -dsq)
 ```
 
 -dns, -dnf, -dsq,
@@ -87,7 +87,7 @@ tdf_clean
 ```
 
 ```
-# A tibble: 3,696 x 21
+# A tibble: 3,696 x 18
    stage rider_name rider_nat team_name team_nat dep_city arr_city
    <int> <chr>      <chr>     <chr>     <chr>    <chr>    <chr>   
  1     1 Teunissen… Netherla… Team Jum… Netherl… Brussels Brussels
@@ -100,11 +100,10 @@ tdf_clean
  8     1 Naesen, O… Belgium   Ag2r La … France   Brussels Brussels
  9     1 Viviani, … Italy     Deceunin… Belgium  Brussels Brussels
 10     1 Stuyven, … Belgium   Trek–Seg… USA      Brussels Brussels
-# … with 3,686 more rows, and 14 more variables: classification <chr>,
+# … with 3,686 more rows, and 11 more variables: classification <chr>,
 #   distance <dbl>, start_date <date>, time <chr>, time_rank <int>,
 #   sprint_pts <dbl>, sprint_rank <int>, climb_pts <dbl>, climb_rank <int>,
-#   young_rider_time <chr>, young_rider_rank <int>, dns <lgl>, dnf <lgl>,
-#   dsq <lgl>
+#   young_rider_time <chr>, young_rider_rank <int>
 ```
 
 
@@ -139,7 +138,7 @@ tdf_clean %>%
 ```
 
 ```
-# A tibble: 21 x 21
+# A tibble: 21 x 18
    stage rider_name rider_nat team_name team_nat dep_city arr_city
    <int> <chr>      <chr>     <chr>     <chr>    <chr>    <chr>   
  1     1 Bevin, Pa… New Zeal… CCC Team  Poland   Brussels Brussels
@@ -152,11 +151,10 @@ tdf_clean %>%
  8     8 Bevin, Pa… New Zeal… CCC Team  Poland   Macon    Saint E…
  9     9 Bevin, Pa… New Zeal… CCC Team  Poland   Saint E… Brioude 
 10    10 Bevin, Pa… New Zeal… CCC Team  Poland   Saint-F… Albi    
-# … with 11 more rows, and 14 more variables: classification <chr>,
+# … with 11 more rows, and 11 more variables: classification <chr>,
 #   distance <dbl>, start_date <date>, time <chr>, time_rank <int>,
 #   sprint_pts <dbl>, sprint_rank <int>, climb_pts <dbl>, climb_rank <int>,
-#   young_rider_time <chr>, young_rider_rank <int>, dns <lgl>, dnf <lgl>,
-#   dsq <lgl>
+#   young_rider_time <chr>, young_rider_rank <int>
 ```
 
 
@@ -182,7 +180,7 @@ stage_n
 ```
 
 ```
-# A tibble: 3,696 x 21
+# A tibble: 3,696 x 18
    stage rider_name rider_nat team_name team_nat dep_city arr_city
    <int> <chr>      <chr>     <chr>     <chr>    <chr>    <chr>   
  1     1 Teunissen… Netherla… Team Jum… Netherl… Brussels Brussels
@@ -195,11 +193,10 @@ stage_n
  8     1 Naesen, O… Belgium   Ag2r La … France   Brussels Brussels
  9     1 Viviani, … Italy     Deceunin… Belgium  Brussels Brussels
 10     1 Stuyven, … Belgium   Trek–Seg… USA      Brussels Brussels
-# … with 3,686 more rows, and 14 more variables: classification <chr>,
+# … with 3,686 more rows, and 11 more variables: classification <chr>,
 #   distance <dbl>, start_date <date>, time <dbl>, time_rank <int>,
 #   sprint_pts <dbl>, sprint_rank <int>, climb_pts <dbl>, climb_rank <int>,
-#   young_rider_time <chr>, young_rider_rank <int>, dns <lgl>, dnf <lgl>,
-#   dsq <lgl>
+#   young_rider_time <chr>, young_rider_rank <int>
 ```
 
 ```r
@@ -207,7 +204,7 @@ tdf_clean
 ```
 
 ```
-# A tibble: 3,696 x 21
+# A tibble: 3,696 x 18
    stage rider_name rider_nat team_name team_nat dep_city arr_city
    <int> <chr>      <chr>     <chr>     <chr>    <chr>    <chr>   
  1     1 Teunissen… Netherla… Team Jum… Netherl… Brussels Brussels
@@ -220,11 +217,10 @@ tdf_clean
  8     1 Naesen, O… Belgium   Ag2r La … France   Brussels Brussels
  9     1 Viviani, … Italy     Deceunin… Belgium  Brussels Brussels
 10     1 Stuyven, … Belgium   Trek–Seg… USA      Brussels Brussels
-# … with 3,686 more rows, and 14 more variables: classification <chr>,
+# … with 3,686 more rows, and 11 more variables: classification <chr>,
 #   distance <dbl>, start_date <date>, time <chr>, time_rank <int>,
 #   sprint_pts <dbl>, sprint_rank <int>, climb_pts <dbl>, climb_rank <int>,
-#   young_rider_time <chr>, young_rider_rank <int>, dns <lgl>, dnf <lgl>,
-#   dsq <lgl>
+#   young_rider_time <chr>, young_rider_rank <int>
 ```
 
 
@@ -252,75 +248,167 @@ convert_seconds <- function(time) {
 
 
 ```r
-winning_times <- tdf_clean %>%
-  filter(str_detect(time, "\\+\\d{2}:\\d{2}.\\d{2}") == FALSE) %>%
-  #or duh just change this to rank = 1
-  select(stage, time, time_rank) %>%
-  mutate(time = convert_seconds((time)))
-# maybe add rows for 2 and 19? depending
-winning_times
-```
-
-```
-# A tibble: 19 x 3
-   stage  time time_rank
-   <int> <dbl>     <int>
- 1     1  262.         1
- 2     3  280.         1
- 3     4  309.         1
- 4     5  242.         1
- 5     6  269.         1
- 6     7  362.         1
- 7     8  300.         1
- 8     9  243.         1
- 9    10  289.         1
-10    11  231.         1
-11    12  298.         1
-12    13   35          1
-13    14  190.         1
-14    15  287.         1
-15    16  237.         1
-16    17  261.         1
-17    18  334.         1
-18    20  112.         1
-19    21  184.         1
-```
-
-
-```r
 tdf_clean <- tdf_clean %>%
   mutate(time = convert_seconds(time))
 ```
 
 
 ```r
-tdf_clean %>%
-  filter(stage == 4) %>%
+winning_times <- tdf_clean %>%
+  filter(time_rank == 1) %>%
+  select(stage, time)
+
+two <- c(stage = 2, time = NA)
+nineteen <- c(stage = 19, time = NA)
+
+winning_times <- rbind_list(winning_times, two, nineteen) %>%
+  arrange(stage)
+```
+
+
+absolute_times <- function(num) {
+  n <- 
+  woop <- tdf_clean %>%
+    filter(stage == n) %>%
+    mutate(time = case_when(
+      time_rank == 1 ~ time,
+      TRUE ~ winning_times[[n,2]] + time
+    ))
+  
+   return (woop)
+}
+absolute_times(4)
+
+
+
+```r
+woop <- function(n) {
+  yay <- tdf_clean %>%
   mutate(time = case_when(
-    time_rank == 1 ~ time,
-    TRUE ~ winning_times[[3,2]] + time
+    stage == n & time_rank == 1 ~ time,
+    stage == n & time_rank != 1 ~ winning_times[[n, 2]] + time,
+    TRUE ~ time
   ))
+  return (yay)
+}
+
+woop(2)
 ```
 
 ```
-# A tibble: 176 x 21
+# A tibble: 3,696 x 18
    stage rider_name rider_nat team_name team_nat dep_city arr_city
    <int> <chr>      <chr>     <chr>     <chr>    <chr>    <chr>   
- 1     4 Viviani, … Italy     Deceunin… Belgium  Reims    Nancy   
- 2     4 Kristoff,… Norway    UAE Team… United … Reims    Nancy   
- 3     4 Ewan, Cal… Australia Lotto So… Belgium  Reims    Nancy   
- 4     4 Sagan, Pe… Slovakia  Bora - H… Germany  Reims    Nancy   
- 5     4 Groeneweg… Netherla… Team Jum… Netherl… Reims    Nancy   
- 6     4 Teunissen… Netherla… Team Jum… Netherl… Reims    Nancy   
- 7     4 Nizzolo, … Italy     Team Dim… South A… Reims    Nancy   
- 8     4 Stuyven, … Belgium   Trek–Seg… USA      Reims    Nancy   
- 9     4 Matthews,… Australia Team Sun… Netherl… Reims    Nancy   
-10     4 Laporte, … France    Cofidis   France   Reims    Nancy   
-# … with 166 more rows, and 14 more variables: classification <chr>,
+ 1     1 Teunissen… Netherla… Team Jum… Netherl… Brussels Brussels
+ 2     1 Sagan, Pe… Slovakia  Bora - H… Germany  Brussels Brussels
+ 3     1 Ewan, Cal… Australia Lotto So… Belgium  Brussels Brussels
+ 4     1 Nizzolo, … Italy     Team Dim… South A… Brussels Brussels
+ 5     1 Colbrelli… Italy     Bahrain … Bahrain  Brussels Brussels
+ 6     1 Matthews,… Australia Team Sun… Netherl… Brussels Brussels
+ 7     1 Trentin, … Italy     Mitchelt… Austral… Brussels Brussels
+ 8     1 Naesen, O… Belgium   Ag2r La … France   Brussels Brussels
+ 9     1 Viviani, … Italy     Deceunin… Belgium  Brussels Brussels
+10     1 Stuyven, … Belgium   Trek–Seg… USA      Brussels Brussels
+# … with 3,686 more rows, and 11 more variables: classification <chr>,
 #   distance <dbl>, start_date <date>, time <dbl>, time_rank <int>,
 #   sprint_pts <dbl>, sprint_rank <int>, climb_pts <dbl>, climb_rank <int>,
-#   young_rider_time <chr>, young_rider_rank <int>, dns <lgl>, dnf <lgl>,
-#   dsq <lgl>
+#   young_rider_time <chr>, young_rider_rank <int>
+```
+
+
+```r
+tdf_clean <- tdf_clean %>%
+  mutate(time = case_when(
+    stage == 1 & time_rank == 1 ~ time,
+    stage == 1 & time_rank != 1 ~ winning_times[[1, 2]] + time,
+    stage == 2 & time_rank == 1 ~ time,
+    stage == 2 & time_rank != 1 ~ winning_times[[2, 2]] + time,
+    stage == 3 & time_rank == 1 ~ time,
+    stage == 3 & time_rank != 1 ~ winning_times[[3, 2]] + time,
+    stage == 4 & time_rank == 1 ~ time,
+    stage == 4 & time_rank != 1 ~ winning_times[[4, 2]] + time,
+    stage == 5 & time_rank == 1 ~ time,
+    stage == 5 & time_rank != 1 ~ winning_times[[5, 2]] + time,
+    stage == 6 & time_rank == 1 ~ time,
+    stage == 6 & time_rank != 1 ~ winning_times[[6, 2]] + time,
+    stage == 7 & time_rank == 1 ~ time,
+    stage == 7 & time_rank != 1 ~ winning_times[[7, 2]] + time,
+    stage == 8 & time_rank == 1 ~ time,
+    stage == 8 & time_rank != 1 ~ winning_times[[8, 2]] + time,
+    stage == 9 & time_rank == 1 ~ time,
+    stage == 9 & time_rank != 1 ~ winning_times[[9, 2]] + time,
+    stage == 10 & time_rank == 1 ~ time,
+    stage == 10 & time_rank != 1 ~ winning_times[[10, 2]] + time,
+    stage == 11 & time_rank == 1 ~ time,
+    stage == 11 & time_rank != 1 ~ winning_times[[11, 2]] + time,
+    stage == 12 & time_rank == 1 ~ time,
+    stage == 12 & time_rank != 1 ~ winning_times[[12, 2]] + time,
+    stage == 13 & time_rank == 1 ~ time,
+    stage == 13 & time_rank != 1 ~ winning_times[[13, 2]] + time,
+    stage == 14 & time_rank == 1 ~ time,
+    stage == 14 & time_rank != 1 ~ winning_times[[14, 2]] + time,
+    stage == 15 & time_rank == 1 ~ time,
+    stage == 15 & time_rank != 1 ~ winning_times[[15, 2]] + time,
+    stage == 16 & time_rank == 1 ~ time,
+    stage == 16 & time_rank != 1 ~ winning_times[[16, 2]] + time,
+    stage == 17 & time_rank == 1 ~ time,
+    stage == 17 & time_rank != 1 ~ winning_times[[17, 2]] + time,
+    stage == 18 & time_rank == 1 ~ time,
+    stage == 18 & time_rank != 1 ~ winning_times[[18, 2]] + time,
+    stage == 19 & time_rank == 1 ~ time,
+    stage == 19 & time_rank != 1 ~ winning_times[[19, 2]] + time,
+    stage == 20 & time_rank == 1 ~ time,
+    stage == 20 & time_rank != 1 ~ winning_times[[20, 2]] + time,
+    stage == 21 & time_rank == 1 ~ time,
+    stage == 21 & time_rank != 1 ~ winning_times[[21, 2]] + time,
+    TRUE ~ time
+  ))
+```
+
+omo <- function(n) {
+  cat(str_c("stage == ", n, " & time_rank == 1 ~ time,\n stage == ", n, " & time_rank != 1 ~ winning_times[[", n, ", 2]] + time"))
+}
+omo(1)
+
+tdf_clean %>%
+  mutate(time = case_when(
+    omo(1),
+    omo(2), 
+    omo(3),
+    TRUE ~ time
+  ))
+
+
+```r
+minutes_and_seconds <- function(time) {
+  min <- time %/% 60
+  sec <- time %% 60
+  return (str_c(min, ":", sec))
+  as.POSIXlt()
+}
+
+tdf_clean %>%
+  mutate(time = minutes_and_seconds(time))
+```
+
+```
+# A tibble: 3,696 x 18
+   stage rider_name rider_nat team_name team_nat dep_city arr_city
+   <int> <chr>      <chr>     <chr>     <chr>    <chr>    <chr>   
+ 1     1 Teunissen… Netherla… Team Jum… Netherl… Brussels Brussels
+ 2     1 Sagan, Pe… Slovakia  Bora - H… Germany  Brussels Brussels
+ 3     1 Ewan, Cal… Australia Lotto So… Belgium  Brussels Brussels
+ 4     1 Nizzolo, … Italy     Team Dim… South A… Brussels Brussels
+ 5     1 Colbrelli… Italy     Bahrain … Bahrain  Brussels Brussels
+ 6     1 Matthews,… Australia Team Sun… Netherl… Brussels Brussels
+ 7     1 Trentin, … Italy     Mitchelt… Austral… Brussels Brussels
+ 8     1 Naesen, O… Belgium   Ag2r La … France   Brussels Brussels
+ 9     1 Viviani, … Italy     Deceunin… Belgium  Brussels Brussels
+10     1 Stuyven, … Belgium   Trek–Seg… USA      Brussels Brussels
+# … with 3,686 more rows, and 11 more variables: classification <chr>,
+#   distance <dbl>, start_date <date>, time <chr>, time_rank <int>,
+#   sprint_pts <dbl>, sprint_rank <int>, climb_pts <dbl>, climb_rank <int>,
+#   young_rider_time <chr>, young_rider_rank <int>
 ```
 
 

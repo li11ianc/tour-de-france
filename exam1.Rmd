@@ -74,7 +74,7 @@ messy_tdf <- messy_tdf %>%
          )
 
 tdf_clean <- messy_tdf %>%
-  select(-team_time, -team_rank)
+  select(-team_time, -team_rank, -dns, -dnf, -dsq)
 ```
 
 -dns, -dnf, -dsq,
@@ -138,27 +138,123 @@ convert_seconds <- function(time) {
 ```
 
 ```{r}
-winning_times <- tdf_clean %>%
-  filter(str_detect(time, "\\+\\d{2}:\\d{2}.\\d{2}") == FALSE) %>%
-  #or duh just change this to rank = 1
-  select(stage, time, time_rank) %>%
-  mutate(time = convert_seconds((time)))
-# maybe add rows for 2 and 19? depending
-winning_times
-```
-
-```{r}
 tdf_clean <- tdf_clean %>%
   mutate(time = convert_seconds(time))
 ```
 
 ```{r}
-tdf_clean %>%
-  filter(stage == 4) %>%
+winning_times <- tdf_clean %>%
+  filter(time_rank == 1) %>%
+  select(stage, time)
+
+two <- c(stage = 2, time = NA)
+nineteen <- c(stage = 19, time = NA)
+
+winning_times <- rbind_list(winning_times, two, nineteen) %>%
+  arrange(stage)
+```
+
+
+absolute_times <- function(num) {
+  n <- 
+  woop <- tdf_clean %>%
+    filter(stage == n) %>%
+    mutate(time = case_when(
+      time_rank == 1 ~ time,
+      TRUE ~ winning_times[[n,2]] + time
+    ))
+  
+   return (woop)
+}
+absolute_times(4)
+
+
+```{r}
+woop <- function(n) {
+  yay <- tdf_clean %>%
   mutate(time = case_when(
-    time_rank == 1 ~ time,
-    TRUE ~ winning_times[[3,2]] + time
+    stage == n & time_rank == 1 ~ time,
+    stage == n & time_rank != 1 ~ winning_times[[n, 2]] + time,
+    TRUE ~ time
   ))
+  return (yay)
+}
+
+woop(2)
+```
+
+```{r}
+tdf_clean <- tdf_clean %>%
+  mutate(time = case_when(
+    stage == 1 & time_rank == 1 ~ time,
+    stage == 1 & time_rank != 1 ~ winning_times[[1, 2]] + time,
+    stage == 2 & time_rank == 1 ~ time,
+    stage == 2 & time_rank != 1 ~ winning_times[[2, 2]] + time,
+    stage == 3 & time_rank == 1 ~ time,
+    stage == 3 & time_rank != 1 ~ winning_times[[3, 2]] + time,
+    stage == 4 & time_rank == 1 ~ time,
+    stage == 4 & time_rank != 1 ~ winning_times[[4, 2]] + time,
+    stage == 5 & time_rank == 1 ~ time,
+    stage == 5 & time_rank != 1 ~ winning_times[[5, 2]] + time,
+    stage == 6 & time_rank == 1 ~ time,
+    stage == 6 & time_rank != 1 ~ winning_times[[6, 2]] + time,
+    stage == 7 & time_rank == 1 ~ time,
+    stage == 7 & time_rank != 1 ~ winning_times[[7, 2]] + time,
+    stage == 8 & time_rank == 1 ~ time,
+    stage == 8 & time_rank != 1 ~ winning_times[[8, 2]] + time,
+    stage == 9 & time_rank == 1 ~ time,
+    stage == 9 & time_rank != 1 ~ winning_times[[9, 2]] + time,
+    stage == 10 & time_rank == 1 ~ time,
+    stage == 10 & time_rank != 1 ~ winning_times[[10, 2]] + time,
+    stage == 11 & time_rank == 1 ~ time,
+    stage == 11 & time_rank != 1 ~ winning_times[[11, 2]] + time,
+    stage == 12 & time_rank == 1 ~ time,
+    stage == 12 & time_rank != 1 ~ winning_times[[12, 2]] + time,
+    stage == 13 & time_rank == 1 ~ time,
+    stage == 13 & time_rank != 1 ~ winning_times[[13, 2]] + time,
+    stage == 14 & time_rank == 1 ~ time,
+    stage == 14 & time_rank != 1 ~ winning_times[[14, 2]] + time,
+    stage == 15 & time_rank == 1 ~ time,
+    stage == 15 & time_rank != 1 ~ winning_times[[15, 2]] + time,
+    stage == 16 & time_rank == 1 ~ time,
+    stage == 16 & time_rank != 1 ~ winning_times[[16, 2]] + time,
+    stage == 17 & time_rank == 1 ~ time,
+    stage == 17 & time_rank != 1 ~ winning_times[[17, 2]] + time,
+    stage == 18 & time_rank == 1 ~ time,
+    stage == 18 & time_rank != 1 ~ winning_times[[18, 2]] + time,
+    stage == 19 & time_rank == 1 ~ time,
+    stage == 19 & time_rank != 1 ~ winning_times[[19, 2]] + time,
+    stage == 20 & time_rank == 1 ~ time,
+    stage == 20 & time_rank != 1 ~ winning_times[[20, 2]] + time,
+    stage == 21 & time_rank == 1 ~ time,
+    stage == 21 & time_rank != 1 ~ winning_times[[21, 2]] + time,
+    TRUE ~ time
+  ))
+```
+
+omo <- function(n) {
+  cat(str_c("stage == ", n, " & time_rank == 1 ~ time,\n stage == ", n, " & time_rank != 1 ~ winning_times[[", n, ", 2]] + time"))
+}
+omo(1)
+
+tdf_clean %>%
+  mutate(time = case_when(
+    omo(1),
+    omo(2), 
+    omo(3),
+    TRUE ~ time
+  ))
+
+```{r}
+minutes_and_seconds <- function(time) {
+  min <- time %/% 60
+  sec <- time %% 60
+  return (str_c(min, ":", sec))
+  as.POSIXlt()
+}
+
+tdf_clean %>%
+  mutate(time = minutes_and_seconds(time))
 ```
 
 
