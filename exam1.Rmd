@@ -26,7 +26,6 @@ library(stringr)
 
 ```{r data}
 tdf <- readRDS(file = "data/tdf_2019.rds")
-View(tdf)
 stage1 <- tdf[[1]]
 ```
 
@@ -117,12 +116,65 @@ team_info <- lapply(tdf[[2]]$stage$teams, data.frame) %>%
 people_teams <- full_join(people, team_info, by = "team.id")
 data <- full_join(people_teams, stage_info, by = "description") 
 data
-data %>%
-  select(stage = description, rider_name = name.x, rider_nat = nationality.x, team_name = team.name, team_nat = team.nationality, dep_city = departure_city, arr_city = arrival_city, classification, distance, start_date = scheduled)
+new_data <- data %>%
+  select(stage = description, rider_name = name.x, rider_nat = nationality.x, team_name = team.name, team_nat = team.nationality, team_time = result.team_time, team_ranking = result.team_time_ranking, dep_city = departure_city, arr_city = arrival_city, classification, distance, start_date = scheduled)
+new_data
 ```
 
-```{r}
-for (n in (1:length(tdf[[1]]$stage$competitors))) {
-  print(tdf[[1]]$stage$competitors[[n]]$name)
+```{r harvest-stage-info}
+compile_stage <- function(n){
+  stage_info <- data.frame(tdf[[n]]$stage) %>%
+    select(description:single_event)
+  
+  people <- lapply(tdf[[n]]$stage$competitors, data.frame) %>%
+    bind_rows() %>%
+    mutate(description = (str_c("Stage ", n)))
+  
+  team_info <- lapply(tdf[[n]]$stage$teams, data.frame) %>%
+    bind_rows() %>%
+    rename(team.id = id)
+  
+  people_teams <- full_join(people, team_info, by = "team.id")
+  
+  whole_stage <- full_join(people_teams, stage_info, by = "description") 
+
+  return (whole_stage)
 }
+
+messy_tdf <- lapply(1:21, compile_stage) %>%
+  rbind_list()
 ```
+  whole_stage <- whole_stage %>%
+    select(stage = description, rider_name = name.x, rider_nat = nationality.x, team_name = team.name, team_nat = team.nationality, time = result.time, time_rank = result.time_ranking, team_time = result.team_time, team_rank = result.team_time_ranking, sprint_pts = result.sprint, sprint_rank = result.sprint_ranking, climb_pts = result.climber, climb_rank = result.climber_ranking, young_rider_time = result.young_rider, young_rider_rank = result.young_rider_ranking, dep_city = departure_city, arr_city = arrival_city, classification, distance, start_date = scheduled)
+```
+
+```{r get-stage-info-1}
+compile_stage <- function(n){
+  stage_info <- data.frame(tdf[[n]]$stage) %>%
+    select(description:single_event)
+  
+  people <- lapply(tdf[[n]]$stage$competitors, data.frame) %>%
+    bind_rows() %>%
+    mutate(description = (str_c("Stage ", n)))
+  
+  team_info <- lapply(tdf[[n]]$stage$teams, data.frame) %>%
+    bind_rows() %>%
+    rename(team.id = id)
+  
+  people_teams <- full_join(people, team_info, by = "team.id")
+  
+  whole_stage <- full_join(people_teams, stage_info, by = "description") 
+
+  return (whole_stage)
+}
+compile_stage(2)
+```
+
+time - cyclist's time or relative time on a given stage (character)
+time_rank - rank of cyclist as given in the stage (integer)
+sprint_pts - sprint points earned by cyclist on given stage (double)
+sprint_rank - rank of cyclist based on sprint points within stage (integer)
+climb_pts - climb points earned by cyclist on given stage (double)
+climb_rank - rank of cyclist based on climb points within stage (integer)
+young_rider_time - young rider time on a given stage (character)
+young_rider_rank - rank of cyclist based on young rider time within stage (integer)

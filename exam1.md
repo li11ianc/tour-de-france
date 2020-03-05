@@ -25,7 +25,6 @@ library(stringr)
 
 ```r
 tdf <- readRDS(file = "data/tdf_2019.rds")
-View(tdf)
 stage1 <- tdf[[1]]
 ```
 
@@ -3067,8 +3066,9 @@ data
 ```
 
 ```r
-data %>%
-  select(stage = description, rider_name = name.x, rider_nat = nationality.x, team_name = team.name, team_nat = team.nationality, dep_city = departure_city, arr_city = arrival_city, classification, distance, start_date = scheduled)
+new_data <- data %>%
+  select(stage = description, rider_name = name.x, rider_nat = nationality.x, team_name = team.name, team_nat = team.nationality, team_time = result.team_time, team_ranking = result.team_time_ranking, dep_city = departure_city, arr_city = arrival_city, classification, distance, start_date = scheduled)
+new_data
 ```
 
 ```
@@ -3249,544 +3249,1837 @@ data %>%
 174 Stage 2                     Delaplace, Anthony         France
 175 Stage 2                          Dowsett, Alex  Great Britain
 176 Stage 2                              Bol, Cees    Netherlands
-                    team_name             team_nat dep_city arr_city
-1               Movistar Team                Spain Brussels Brussels
-2            Mitchelton-Scott            Australia Brussels Brussels
-3            Mitchelton-Scott            Australia Brussels Brussels
-4          EF Education First                  USA Brussels Brussels
-5      Team Katusha - Alpecin          Switzerland Brussels Brussels
-6                Lotto Soudal              Belgium Brussels Brussels
-7            Bahrain - Merida              Bahrain Brussels Brussels
-8   Deceuninck - Quick - Step              Belgium Brussels Brussels
-9      Team Katusha - Alpecin          Switzerland Brussels Brussels
-10             Trek–Segafredo                  USA Brussels Brussels
-11         EF Education First                  USA Brussels Brussels
-12                Team Sunweb          Netherlands Brussels Brussels
-13                 Team Ineos        Great Britain Brussels Brussels
-14             Direct Energie               France Brussels Brussels
-15                    Cofidis               France Brussels Brussels
-16                    Cofidis               France Brussels Brussels
-17               Lotto Soudal              Belgium Brussels Brussels
-18               Lotto Soudal              Belgium Brussels Brussels
-19           Bahrain - Merida              Bahrain Brussels Brussels
-20         EF Education First                  USA Brussels Brussels
-21           Mitchelton-Scott            Australia Brussels Brussels
-22        Team Dimension Data         South Africa Brussels Brussels
-23             Groupama – FDJ               France Brussels Brussels
-24              Movistar Team                Spain Brussels Brussels
-25             Groupama – FDJ               France Brussels Brussels
-26               Lotto Soudal              Belgium Brussels Brussels
-27            Astana Pro Team           Kazakhstan Brussels Brussels
-28        Team Dimension Data         South Africa Brussels Brussels
-29           Ag2r La Mondiale               France Brussels Brussels
-30          UAE Team Emirates United Arab Emirates Brussels Brussels
-31            Fortuneo-Samsic               France Brussels Brussels
-32           Ag2r La Mondiale               France Brussels Brussels
-33  Deceuninck - Quick - Step              Belgium Brussels Brussels
-34            Astana Pro Team           Kazakhstan Brussels Brussels
-35                Team Sunweb          Netherlands Brussels Brussels
-36            Astana Pro Team           Kazakhstan Brussels Brussels
-37            Astana Pro Team           Kazakhstan Brussels Brussels
-38                    Cofidis               France Brussels Brussels
-39             Groupama – FDJ               France Brussels Brussels
-40                Team Sunweb          Netherlands Brussels Brussels
-41                    Cofidis               France Brussels Brussels
-42          UAE Team Emirates United Arab Emirates Brussels Brussels
-43           Bora - Hansgrohe              Germany Brussels Brussels
-44             Trek–Segafredo                  USA Brussels Brussels
-45           Ag2r La Mondiale               France Brussels Brussels
-46  Deceuninck - Quick - Step              Belgium Brussels Brussels
-47     Team Katusha - Alpecin          Switzerland Brussels Brussels
-48             Direct Energie               France Brussels Brussels
-49             Trek–Segafredo                  USA Brussels Brussels
-50        Wanty Groupe Gobert              Belgium Brussels Brussels
-51                 Team Ineos        Great Britain Brussels Brussels
-52             Direct Energie               France Brussels Brussels
-53        Wanty Groupe Gobert              Belgium Brussels Brussels
-54           Bahrain - Merida              Bahrain Brussels Brussels
-55         Team Jumbo - Visma          Netherlands Brussels Brussels
-56  Deceuninck - Quick - Step              Belgium Brussels Brussels
-57                Team Sunweb          Netherlands Brussels Brussels
-58             Groupama – FDJ               France Brussels Brussels
-59                    Cofidis               France Brussels Brussels
-60            Fortuneo-Samsic               France Brussels Brussels
-61             Direct Energie               France Brussels Brussels
-62         Team Jumbo - Visma          Netherlands Brussels Brussels
-63           Ag2r La Mondiale               France Brussels Brussels
-64          UAE Team Emirates United Arab Emirates Brussels Brussels
-65                   CCC Team               Poland Brussels Brussels
-66         Team Jumbo - Visma          Netherlands Brussels Brussels
-67         Team Jumbo - Visma          Netherlands Brussels Brussels
-68             Direct Energie               France Brussels Brussels
-69            Fortuneo-Samsic               France Brussels Brussels
-70                   CCC Team               Poland Brussels Brussels
-71           Bora - Hansgrohe              Germany Brussels Brussels
-72         Team Jumbo - Visma          Netherlands Brussels Brussels
-73           Ag2r La Mondiale               France Brussels Brussels
-74              Movistar Team                Spain Brussels Brussels
-75        Wanty Groupe Gobert              Belgium Brussels Brussels
-76                   CCC Team               Poland Brussels Brussels
-77                 Team Ineos        Great Britain Brussels Brussels
-78        Wanty Groupe Gobert              Belgium Brussels Brussels
-79           Bora - Hansgrohe              Germany Brussels Brussels
-80           Bora - Hansgrohe              Germany Brussels Brussels
-81             Trek–Segafredo                  USA Brussels Brussels
-82        Wanty Groupe Gobert              Belgium Brussels Brussels
-83           Bora - Hansgrohe              Germany Brussels Brussels
-84     Team Katusha - Alpecin          Switzerland Brussels Brussels
-85  Deceuninck - Quick - Step              Belgium Brussels Brussels
-86     Team Katusha - Alpecin          Switzerland Brussels Brussels
-87         Team Jumbo - Visma          Netherlands Brussels Brussels
-88          UAE Team Emirates United Arab Emirates Brussels Brussels
-89            Astana Pro Team           Kazakhstan Brussels Brussels
-90             Groupama – FDJ               France Brussels Brussels
-91                 Team Ineos        Great Britain Brussels Brussels
-92            Astana Pro Team           Kazakhstan Brussels Brussels
-93           Mitchelton-Scott            Australia Brussels Brussels
-94         EF Education First                  USA Brussels Brussels
-95        Team Dimension Data         South Africa Brussels Brussels
-96         Team Jumbo - Visma          Netherlands Brussels Brussels
-97             Trek–Segafredo                  USA Brussels Brussels
-98           Ag2r La Mondiale               France Brussels Brussels
-99        Wanty Groupe Gobert              Belgium Brussels Brussels
-100        EF Education First                  USA Brussels Brussels
-101            Direct Energie               France Brussels Brussels
-102                   Cofidis               France Brussels Brussels
-103            Trek–Segafredo                  USA Brussels Brussels
-104           Fortuneo-Samsic               France Brussels Brussels
-105         UAE Team Emirates United Arab Emirates Brussels Brussels
-106              Lotto Soudal              Belgium Brussels Brussels
-107         UAE Team Emirates United Arab Emirates Brussels Brussels
-108          Ag2r La Mondiale               France Brussels Brussels
-109          Ag2r La Mondiale               France Brussels Brussels
-110            Direct Energie               France Brussels Brussels
-111             Movistar Team                Spain Brussels Brussels
-112          Bora - Hansgrohe              Germany Brussels Brussels
-113       Team Dimension Data         South Africa Brussels Brussels
-114          Bahrain - Merida              Bahrain Brussels Brussels
-115            Trek–Segafredo                  USA Brussels Brussels
-116              Lotto Soudal              Belgium Brussels Brussels
-117               Team Sunweb          Netherlands Brussels Brussels
-118             Movistar Team                Spain Brussels Brussels
-119           Fortuneo-Samsic               France Brussels Brussels
-120           Fortuneo-Samsic               France Brussels Brussels
-121       Team Dimension Data         South Africa Brussels Brussels
-122                  CCC Team               Poland Brussels Brussels
-123        EF Education First                  USA Brussels Brussels
-124            Groupama – FDJ               France Brussels Brussels
-125        EF Education First                  USA Brussels Brussels
-126                  CCC Team               Poland Brussels Brussels
-127       Team Dimension Data         South Africa Brussels Brussels
-128                  CCC Team               Poland Brussels Brussels
-129            Groupama – FDJ               France Brussels Brussels
-130 Deceuninck - Quick - Step              Belgium Brussels Brussels
-131        EF Education First                  USA Brussels Brussels
-132          Bora - Hansgrohe              Germany Brussels Brussels
-133    Team Katusha - Alpecin          Switzerland Brussels Brussels
-134       Team Dimension Data         South Africa Brussels Brussels
-135         UAE Team Emirates United Arab Emirates Brussels Brussels
-136          Mitchelton-Scott            Australia Brussels Brussels
-137          Mitchelton-Scott            Australia Brussels Brussels
-138       Team Dimension Data         South Africa Brussels Brussels
-139           Fortuneo-Samsic               France Brussels Brussels
-140                  CCC Team               Poland Brussels Brussels
-141       Wanty Groupe Gobert              Belgium Brussels Brussels
-142             Movistar Team                Spain Brussels Brussels
-143                   Cofidis               France Brussels Brussels
-144             Movistar Team                Spain Brussels Brussels
-145          Bahrain - Merida              Bahrain Brussels Brussels
-146       Wanty Groupe Gobert              Belgium Brussels Brussels
-147    Team Katusha - Alpecin          Switzerland Brussels Brussels
-148                   Cofidis               France Brussels Brussels
-149           Astana Pro Team           Kazakhstan Brussels Brussels
-150          Mitchelton-Scott            Australia Brussels Brussels
-151          Mitchelton-Scott            Australia Brussels Brussels
-152               Team Sunweb          Netherlands Brussels Brussels
-153                Team Ineos        Great Britain Brussels Brussels
-154                Team Ineos        Great Britain Brussels Brussels
-155          Bahrain - Merida              Bahrain Brussels Brussels
-156            Direct Energie               France Brussels Brussels
-157         UAE Team Emirates United Arab Emirates Brussels Brussels
-158              Lotto Soudal              Belgium Brussels Brussels
-159 Deceuninck - Quick - Step              Belgium Brussels Brussels
-160           Astana Pro Team           Kazakhstan Brussels Brussels
-161                  CCC Team               Poland Brussels Brussels
-162                Team Ineos        Great Britain Brussels Brussels
-163 Deceuninck - Quick - Step              Belgium Brussels Brussels
-164             Movistar Team                Spain Brussels Brussels
-165            Groupama – FDJ               France Brussels Brussels
-166          Bahrain - Merida              Bahrain Brussels Brussels
-167                Team Ineos        Great Britain Brussels Brussels
-168          Bora - Hansgrohe              Germany Brussels Brussels
-169               Team Sunweb          Netherlands Brussels Brussels
-170          Bahrain - Merida              Bahrain Brussels Brussels
-171              Lotto Soudal              Belgium Brussels Brussels
-172            Trek–Segafredo                  USA Brussels Brussels
-173        Team Jumbo - Visma          Netherlands Brussels Brussels
-174           Fortuneo-Samsic               France Brussels Brussels
-175    Team Katusha - Alpecin          Switzerland Brussels Brussels
-176               Team Sunweb          Netherlands Brussels Brussels
-     classification distance                start_date
-1   Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-2   Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-3   Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-4   Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-5   Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-6   Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-7   Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-8   Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-9   Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-10  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-11  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-12  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-13  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-14  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-15  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-16  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-17  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-18  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-19  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-20  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-21  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-22  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-23  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-24  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-25  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-26  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-27  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-28  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-29  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-30  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-31  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-32  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-33  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-34  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-35  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-36  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-37  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-38  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-39  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-40  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-41  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-42  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-43  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-44  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-45  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-46  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-47  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-48  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-49  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-50  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-51  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-52  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-53  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-54  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-55  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-56  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-57  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-58  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-59  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-60  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-61  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-62  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-63  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-64  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-65  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-66  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-67  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-68  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-69  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-70  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-71  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-72  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-73  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-74  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-75  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-76  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-77  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-78  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-79  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-80  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-81  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-82  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-83  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-84  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-85  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-86  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-87  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-88  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-89  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-90  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-91  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-92  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-93  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-94  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-95  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-96  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-97  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-98  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-99  Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-100 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-101 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-102 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-103 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-104 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-105 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-106 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-107 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-108 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-109 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-110 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-111 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-112 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-113 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-114 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-115 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-116 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-117 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-118 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-119 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-120 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-121 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-122 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-123 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-124 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-125 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-126 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-127 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-128 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-129 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-130 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-131 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-132 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-133 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-134 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-135 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-136 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-137 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-138 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-139 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-140 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-141 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-142 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-143 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-144 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-145 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-146 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-147 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-148 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-149 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-150 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-151 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-152 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-153 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-154 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-155 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-156 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-157 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-158 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-159 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-160 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-161 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-162 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-163 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-164 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-165 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-166 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-167 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-168 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-169 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-170 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-171 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-172 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-173 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-174 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-175 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
-176 Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+                    team_name             team_nat team_time team_ranking
+1               Movistar Team                Spain +00:01.05           17
+2            Mitchelton-Scott            Australia +00:00.41           11
+3            Mitchelton-Scott            Australia +00:00.41           11
+4          EF Education First                  USA +00:00.28            6
+5      Team Katusha - Alpecin          Switzerland +00:00.26            5
+6                Lotto Soudal              Belgium +00:00.59           15
+7            Bahrain - Merida              Bahrain +00:00.36            9
+8   Deceuninck - Quick - Step              Belgium +00:00.21            3
+9      Team Katusha - Alpecin          Switzerland +00:00.26            5
+10             Trek–Segafredo                  USA +00:01.18           18
+11         EF Education First                  USA +00:00.28            6
+12                Team Sunweb          Netherlands +00:00.26            4
+13                 Team Ineos        Great Britain +00:00.20            2
+14             Direct Energie               France +00:01.42           20
+15                    Cofidis               France +00:00.53           13
+16                    Cofidis               France +00:00.53           13
+17               Lotto Soudal              Belgium +00:00.59           15
+18               Lotto Soudal              Belgium +00:00.59           15
+19           Bahrain - Merida              Bahrain +00:00.36            9
+20         EF Education First                  USA +00:00.28            6
+21           Mitchelton-Scott            Australia +00:00.41           11
+22        Team Dimension Data         South Africa +00:00.54           14
+23             Groupama – FDJ               France +00:00.32            8
+24              Movistar Team                Spain +00:01.05           17
+25             Groupama – FDJ               France +00:00.32            8
+26               Lotto Soudal              Belgium +00:00.59           15
+27            Astana Pro Team           Kazakhstan +00:00.41           10
+28        Team Dimension Data         South Africa +00:00.54           14
+29           Ag2r La Mondiale               France +00:01.19           19
+30          UAE Team Emirates United Arab Emirates +00:01.03           16
+31            Fortuneo-Samsic               France +00:01.51           21
+32           Ag2r La Mondiale               France +00:01.19           19
+33  Deceuninck - Quick - Step              Belgium +00:00.21            3
+34            Astana Pro Team           Kazakhstan +00:00.41           10
+35                Team Sunweb          Netherlands +00:00.26            4
+36            Astana Pro Team           Kazakhstan +00:00.41           10
+37            Astana Pro Team           Kazakhstan +00:00.41           10
+38                    Cofidis               France +00:00.53           13
+39             Groupama – FDJ               France +00:00.32            8
+40                Team Sunweb          Netherlands +00:00.26            4
+41                    Cofidis               France +00:00.53           13
+42          UAE Team Emirates United Arab Emirates +00:01.03           16
+43           Bora - Hansgrohe              Germany +00:00.46           12
+44             Trek–Segafredo                  USA +00:01.18           18
+45           Ag2r La Mondiale               France +00:01.19           19
+46  Deceuninck - Quick - Step              Belgium +00:00.21            3
+47     Team Katusha - Alpecin          Switzerland +00:00.26            5
+48             Direct Energie               France +00:01.42           20
+49             Trek–Segafredo                  USA +00:01.18           18
+50        Wanty Groupe Gobert              Belgium +00:01.58           22
+51                 Team Ineos        Great Britain +00:00.20            2
+52             Direct Energie               France +00:01.42           20
+53        Wanty Groupe Gobert              Belgium +00:01.58           22
+54           Bahrain - Merida              Bahrain +00:00.36            9
+55         Team Jumbo - Visma          Netherlands  00:28.57            1
+56  Deceuninck - Quick - Step              Belgium +00:00.21            3
+57                Team Sunweb          Netherlands +00:00.26            4
+58             Groupama – FDJ               France +00:00.32            8
+59                    Cofidis               France +00:00.53           13
+60            Fortuneo-Samsic               France +00:01.51           21
+61             Direct Energie               France +00:01.42           20
+62         Team Jumbo - Visma          Netherlands  00:28.57            1
+63           Ag2r La Mondiale               France +00:01.19           19
+64          UAE Team Emirates United Arab Emirates +00:01.03           16
+65                   CCC Team               Poland +00:00.31            7
+66         Team Jumbo - Visma          Netherlands  00:28.57            1
+67         Team Jumbo - Visma          Netherlands  00:28.57            1
+68             Direct Energie               France +00:01.42           20
+69            Fortuneo-Samsic               France +00:01.51           21
+70                   CCC Team               Poland +00:00.31            7
+71           Bora - Hansgrohe              Germany +00:00.46           12
+72         Team Jumbo - Visma          Netherlands  00:28.57            1
+73           Ag2r La Mondiale               France +00:01.19           19
+74              Movistar Team                Spain +00:01.05           17
+75        Wanty Groupe Gobert              Belgium +00:01.58           22
+76                   CCC Team               Poland +00:00.31            7
+77                 Team Ineos        Great Britain +00:00.20            2
+78        Wanty Groupe Gobert              Belgium +00:01.58           22
+79           Bora - Hansgrohe              Germany +00:00.46           12
+80           Bora - Hansgrohe              Germany +00:00.46           12
+81             Trek–Segafredo                  USA +00:01.18           18
+82        Wanty Groupe Gobert              Belgium +00:01.58           22
+83           Bora - Hansgrohe              Germany +00:00.46           12
+84     Team Katusha - Alpecin          Switzerland +00:00.26            5
+85  Deceuninck - Quick - Step              Belgium +00:00.21            3
+86     Team Katusha - Alpecin          Switzerland +00:00.26            5
+87         Team Jumbo - Visma          Netherlands  00:28.57            1
+88          UAE Team Emirates United Arab Emirates +00:01.03           16
+89            Astana Pro Team           Kazakhstan +00:00.41           10
+90             Groupama – FDJ               France +00:00.32            8
+91                 Team Ineos        Great Britain +00:00.20            2
+92            Astana Pro Team           Kazakhstan +00:00.41           10
+93           Mitchelton-Scott            Australia +00:00.41           11
+94         EF Education First                  USA +00:00.28            6
+95        Team Dimension Data         South Africa +00:00.54           14
+96         Team Jumbo - Visma          Netherlands  00:28.57            1
+97             Trek–Segafredo                  USA +00:01.18           18
+98           Ag2r La Mondiale               France +00:01.19           19
+99        Wanty Groupe Gobert              Belgium +00:01.58           22
+100        EF Education First                  USA +00:00.28            6
+101            Direct Energie               France +00:01.42           20
+102                   Cofidis               France +00:00.53           13
+103            Trek–Segafredo                  USA +00:01.18           18
+104           Fortuneo-Samsic               France +00:01.51           21
+105         UAE Team Emirates United Arab Emirates +00:01.03           16
+106              Lotto Soudal              Belgium +00:00.59           15
+107         UAE Team Emirates United Arab Emirates +00:01.03           16
+108          Ag2r La Mondiale               France +00:01.19           19
+109          Ag2r La Mondiale               France +00:01.19           19
+110            Direct Energie               France +00:01.42           20
+111             Movistar Team                Spain +00:01.05           17
+112          Bora - Hansgrohe              Germany +00:00.46           12
+113       Team Dimension Data         South Africa +00:00.54           14
+114          Bahrain - Merida              Bahrain +00:00.36            9
+115            Trek–Segafredo                  USA +00:01.18           18
+116              Lotto Soudal              Belgium +00:00.59           15
+117               Team Sunweb          Netherlands +00:00.26            4
+118             Movistar Team                Spain +00:01.05           17
+119           Fortuneo-Samsic               France +00:01.51           21
+120           Fortuneo-Samsic               France +00:01.51           21
+121       Team Dimension Data         South Africa +00:00.54           14
+122                  CCC Team               Poland +00:00.31            7
+123        EF Education First                  USA +00:00.28            6
+124            Groupama – FDJ               France +00:00.32            8
+125        EF Education First                  USA +00:00.28            6
+126                  CCC Team               Poland +00:00.31            7
+127       Team Dimension Data         South Africa +00:00.54           14
+128                  CCC Team               Poland +00:00.31            7
+129            Groupama – FDJ               France +00:00.32            8
+130 Deceuninck - Quick - Step              Belgium +00:00.21            3
+131        EF Education First                  USA +00:00.28            6
+132          Bora - Hansgrohe              Germany +00:00.46           12
+133    Team Katusha - Alpecin          Switzerland +00:00.26            5
+134       Team Dimension Data         South Africa +00:00.54           14
+135         UAE Team Emirates United Arab Emirates +00:01.03           16
+136          Mitchelton-Scott            Australia +00:00.41           11
+137          Mitchelton-Scott            Australia +00:00.41           11
+138       Team Dimension Data         South Africa +00:00.54           14
+139           Fortuneo-Samsic               France +00:01.51           21
+140                  CCC Team               Poland +00:00.31            7
+141       Wanty Groupe Gobert              Belgium +00:01.58           22
+142             Movistar Team                Spain +00:01.05           17
+143                   Cofidis               France +00:00.53           13
+144             Movistar Team                Spain +00:01.05           17
+145          Bahrain - Merida              Bahrain +00:00.36            9
+146       Wanty Groupe Gobert              Belgium +00:01.58           22
+147    Team Katusha - Alpecin          Switzerland +00:00.26            5
+148                   Cofidis               France +00:00.53           13
+149           Astana Pro Team           Kazakhstan +00:00.41           10
+150          Mitchelton-Scott            Australia +00:00.41           11
+151          Mitchelton-Scott            Australia +00:00.41           11
+152               Team Sunweb          Netherlands +00:00.26            4
+153                Team Ineos        Great Britain +00:00.20            2
+154                Team Ineos        Great Britain +00:00.20            2
+155          Bahrain - Merida              Bahrain +00:00.36            9
+156            Direct Energie               France +00:01.42           20
+157         UAE Team Emirates United Arab Emirates +00:01.03           16
+158              Lotto Soudal              Belgium +00:00.59           15
+159 Deceuninck - Quick - Step              Belgium +00:00.21            3
+160           Astana Pro Team           Kazakhstan +00:00.41           10
+161                  CCC Team               Poland +00:00.31            7
+162                Team Ineos        Great Britain +00:00.20            2
+163 Deceuninck - Quick - Step              Belgium +00:00.21            3
+164             Movistar Team                Spain +00:01.05           17
+165            Groupama – FDJ               France +00:00.32            8
+166          Bahrain - Merida              Bahrain +00:00.36            9
+167                Team Ineos        Great Britain +00:00.20            2
+168          Bora - Hansgrohe              Germany +00:00.46           12
+169               Team Sunweb          Netherlands +00:00.26            4
+170          Bahrain - Merida              Bahrain +00:00.36            9
+171              Lotto Soudal              Belgium +00:00.59           15
+172            Trek–Segafredo                  USA +00:01.18           18
+173        Team Jumbo - Visma          Netherlands  00:28.57            1
+174           Fortuneo-Samsic               France +00:01.51           21
+175    Team Katusha - Alpecin          Switzerland +00:00.26            5
+176               Team Sunweb          Netherlands +00:00.26            4
+    dep_city arr_city  classification distance                start_date
+1   Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+2   Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+3   Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+4   Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+5   Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+6   Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+7   Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+8   Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+9   Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+10  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+11  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+12  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+13  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+14  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+15  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+16  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+17  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+18  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+19  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+20  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+21  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+22  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+23  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+24  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+25  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+26  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+27  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+28  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+29  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+30  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+31  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+32  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+33  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+34  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+35  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+36  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+37  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+38  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+39  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+40  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+41  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+42  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+43  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+44  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+45  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+46  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+47  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+48  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+49  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+50  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+51  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+52  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+53  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+54  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+55  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+56  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+57  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+58  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+59  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+60  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+61  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+62  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+63  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+64  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+65  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+66  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+67  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+68  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+69  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+70  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+71  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+72  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+73  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+74  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+75  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+76  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+77  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+78  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+79  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+80  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+81  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+82  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+83  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+84  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+85  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+86  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+87  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+88  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+89  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+90  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+91  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+92  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+93  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+94  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+95  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+96  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+97  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+98  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+99  Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+100 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+101 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+102 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+103 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+104 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+105 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+106 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+107 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+108 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+109 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+110 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+111 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+112 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+113 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+114 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+115 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+116 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+117 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+118 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+119 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+120 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+121 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+122 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+123 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+124 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+125 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+126 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+127 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+128 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+129 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+130 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+131 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+132 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+133 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+134 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+135 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+136 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+137 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+138 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+139 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+140 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+141 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+142 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+143 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+144 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+145 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+146 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+147 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+148 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+149 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+150 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+151 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+152 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+153 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+154 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+155 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+156 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+157 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+158 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+159 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+160 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+161 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+162 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+163 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+164 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+165 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+166 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+167 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+168 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+169 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+170 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+171 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+172 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+173 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+174 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+175 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
+176 Brussels Brussels Team Time Trial     27,6 2019-07-07T12:30:00+00:00
 ```
 
 
 ```r
-for (n in (1:length(tdf[[1]]$stage$competitors))) {
-  print(tdf[[1]]$stage$competitors[[n]]$name)
+compile_stage <- function(n){
+  stage_info <- data.frame(tdf[[n]]$stage) %>%
+    select(description:single_event)
+  
+  people <- lapply(tdf[[n]]$stage$competitors, data.frame) %>%
+    bind_rows() %>%
+    mutate(description = (str_c("Stage ", n)))
+  
+  team_info <- lapply(tdf[[n]]$stage$teams, data.frame) %>%
+    bind_rows() %>%
+    rename(team.id = id)
+  
+  people_teams <- full_join(people, team_info, by = "team.id")
+  
+  whole_stage <- full_join(people_teams, stage_info, by = "description") 
+
+  return (whole_stage)
 }
+
+messy_tdf <- lapply(1:21, compile_stage) %>%
+  rbind_list()
+```
+  whole_stage <- whole_stage %>%
+    select(stage = description, rider_name = name.x, rider_nat = nationality.x, team_name = team.name, team_nat = team.nationality, time = result.time, time_rank = result.time_ranking, team_time = result.team_time, team_rank = result.team_time_ranking, sprint_pts = result.sprint, sprint_rank = result.sprint_ranking, climb_pts = result.climber, climb_rank = result.climber_ranking, young_rider_time = result.young_rider, young_rider_rank = result.young_rider_ranking, dep_city = departure_city, arr_city = arrival_city, classification, distance, start_date = scheduled)
+```
+
+
+```r
+compile_stage <- function(n){
+  stage_info <- data.frame(tdf[[n]]$stage) %>%
+    select(description:single_event)
+  
+  people <- lapply(tdf[[n]]$stage$competitors, data.frame) %>%
+    bind_rows() %>%
+    mutate(description = (str_c("Stage ", n)))
+  
+  team_info <- lapply(tdf[[n]]$stage$teams, data.frame) %>%
+    bind_rows() %>%
+    rename(team.id = id)
+  
+  people_teams <- full_join(people, team_info, by = "team.id")
+  
+  whole_stage <- full_join(people_teams, stage_info, by = "description") 
+
+  return (whole_stage)
+}
+compile_stage(2)
 ```
 
 ```
-[1] "Teunissen, Mike"
-[1] "Sagan, Peter"
-[1] "Ewan, Caleb"
-[1] "Nizzolo, Giacomo"
-[1] "Colbrelli, Sonny"
-[1] "Matthews, Michael"
-[1] "Trentin, Matteo"
-[1] "Naesen, Olivier"
-[1] "Viviani, Elia"
-[1] "Stuyven, Jasper"
-[1] "Van Avermaet, Greg"
-[1] "Bettiol, Alberto"
-[1] "Pasqualon, Andrea"
-[1] "Kristoff, Alexander"
-[1] "Jansen Groendahl, Amund"
-[1] "Simon, Julien"
-[1] "Van Aert, Wout"
-[1] "Laporte, Christophe"
-[1] "Greipel, Andre"
-[1] "Impey, Daryl"
-[1] "Martin, Guillaume"
-[1] "Alaphilippe, Julian"
-[1] "Offredo, Yoann"
-[1] "Clarke, Simon"
-[1] "Nibali, Vincenzo"
-[1] "Bevin, Patrick"
-[1] "Meurisse, Xandro"
-[1] "Langeveld, Sebastian"
-[1] "de Buyst, Jasper"
-[1] "Richeze Araquistain, Ariel Maximiliano"
-[1] "Debusschere, Jens"
-[1] "Hagen, Edvald Boasson"
-[1] "Asgreen, Kasper"
-[1] "Bol, Cees"
-[1] "Garcia Cortina, Ivan"
-[1] "Burghardt, Marcus"
-[1] "Bonifazio, Niccolo"
-[1] "Moerkoev, Michael"
-[1] "Tratnik, Jan"
-[1] "Roche, Nicolas"
-[1] "Zabel, Rick"
-[1] "Konrad, Patrick"
-[1] "Philipsen, Jasper"
-[1] "Keukeleire, Jens"
-[1] "Hepburn, Michael"
-[1] "Yates, Adam"
-[1] "Kreuziger, Roman"
-[1] "Teuns, Dylan"
-[1] "Kluge, Roger"
-[1] "Lampaert, Yves"
-[1] "Mas Nicolau, Enric"
-[1] "Benoot, Tiesj"
-[1] "Quintana, Nairo"
-[1] "Lutsenko, Alexey"
-[1] "Perichon, Pierre-Luc"
-[1] "Kruijswijk, Steven"
-[1] "Amador, Andrey"
-[1] "Calmejane, Lilian"
-[1] "Politt, Nils"
-[1] "Ciccone, Giulio"
-[1] "Oss, Daniel"
-[1] "Eiking, Odd Christian"
-[1] "Backaert, Fredrik"
-[1] "Porte, Richie"
-[1] "Gaudu, David"
-[1] "Molard, Rudy"
-[1] "Valverde, Alejandro"
-[1] "Valgren Andersen, Michael"
-[1] "Felline, Fabio"
-[1] "Schachmann, Maximilian"
-[1] "Muhlberger, Gregor"
-[1] "Ladagnous, Matthieu"
-[1] "Kelderman, Wilco"
-[1] "Izagirre Insausti, Gorka"
-[1] "Van Garderen, Tejay"
-[1] "Pinot, Thibaut"
-[1] "Sicard, Romain"
-[1] "Martin, Tony"
-[1] "Sanchez Gil, Luis Leon"
-[1] "Moscon, Gianni"
-[1] "Bernal, Egan"
-[1] "Uran, Rigoberto"
-[1] "Soler Gimenez, Marc"
-[1] "Henao Montoya, Sergio Luis"
-[1] "Janse van Rensburg, Reinhardt"
-[1] "Kamna, Lennard"
-[1] "Woods, Michael"
-[1] "Landa Meana, Mikel"
-[1] "Cherel, Mikael"
-[1] "de Plus, Laurens"
-[1] "Houle, Hugo"
-[1] "Bardet, Romain"
-[1] "Fuglsang, Jakob"
-[1] "Santos Simoes Oliveira, Nelson Filipe"
-[1] "Ourselin, Paul"
-[1] "Nielsen, Magnus Cort"
-[1] "Fraile Matarranz, Omar"
-[1] "Wurtz Schmidt, Mads"
-[1] "Turgis, Anthony"
-[1] "Berhane, Natnael"
-[1] "Barguil, Warren"
-[1] "Goncalves, Jose"
-[1] "Zakarin, Ilnur"
-[1] "Durbridge, Luke"
-[1] "Aru, Fabio"
-[1] "Laengen, Vegard Stake"
-[1] "Kragh Andersen, Soeren"
-[1] "Taaramae, Rein"
-[1] "Kangert, Tanel"
-[1] "Dowsett, Alex"
-[1] "Thomas, Geraint"
-[1] "Schaer, Michael"
-[1] "Caruso, Damiano"
-[1] "Rosskopf, Joey"
-[1] "Geschke, Simon"
-[1] "De Kort, Koen"
-[1] "Bernard, Julien"
-[1] "Edet, Nicolas"
-[1] "Arndt, Nikias"
-[1] "Faria Da Costa, Rui Alberto"
-[1] "Martin, Daniel"
-[1] "van Melsen, Kevin"
-[1] "Poels, Wouter"
-[1] "Wellens, Tim"
-[1] "Kung, Stefan"
-[1] "Moinard, Amael"
-[1] "Delaplace, Anthony"
-[1] "de Gendt, Aime"
-[1] "Bilbao, Pello"
-[1] "De Gendt, Thomas"
-[1] "Monfort, Maxime"
-[1] "King, Benjamin"
-[1] "Roux, Anthony"
-[1] "Bonnet, William"
-[1] "Frank, Mathias"
-[1] "Gallopin, Tony"
-[1] "Reichenbach, Sebastien"
-[1] "Bak, Lars Ytting"
-[1] "Bouet, Maxime"
-[1] "Scully, Thomas"
-[1] "Herrada Lopez, Jesus"
-[1] "Cummings, Steven"
-[1] "Grellier, Fabien"
-[1] "Perez, Anthony"
-[1] "Haga, Chad"
-[1] "Yates, Simon"
-[1] "Haig, Jack"
-[1] "Vachon, Florian"
-[1] "Ledanois, Kevin"
-[1] "Erviti, Imanol"
-[1] "de Marchi, Alessandro"
-[1] "Pauwels, Serge"
-[1] "Bystroem, Sven Erik"
-[1] "van Baarle, Dylan"
-[1] "Mollema, Bauke"
-[1] "Gougeard, Alexis"
-[1] "Terpstra, Niki"
-[1] "Dennis, Rohan"
-[1] "Mohoric, Matej"
-[1] "Kwiatkowski, Michal"
-[1] "Juul-Jensen, Christopher"
-[1] "Rowe, Luke"
-[1] "Rossetto, Stephane"
-[1] "Vuillermoz, Alexis"
-[1] "Skujins, Toms"
-[1] "Verona Quintanilla, Carlos"
-[1] "Haller, Marco"
-[1] "Gesbert, Elie"
-[1] "Devenyns, Dries"
-[1] "Wisniowski, Lukasz"
-[1] "Castroviejo, Nicolas Jonathan"
-[1] "Bennett, George"
-[1] "Buchmann, Emanuel"
-[1] "Postlberger, Lukas"
-[1] "Groenewegen, Dylan"
-[1] "Cosnefroy, Benoit"
+                      id                                 name.x gender.x
+1    sr:competitor:26658                    Valverde, Alejandro     male
+2   sr:competitor:135930                             Haig, Jack     male
+3   sr:competitor:123892                            Yates, Adam     male
+4   sr:competitor:310616                         Scully, Thomas     male
+5   sr:competitor:123378                         Zakarin, Ilnur     male
+6   sr:competitor:135922                            Ewan, Caleb     male
+7   sr:competitor:135938                         Mohoric, Matej     male
+8   sr:competitor:135924                    Alaphilippe, Julian     male
+9   sr:competitor:135926                            Zabel, Rick     male
+10  sr:competitor:146106                        Stuyven, Jasper     male
+11  sr:competitor:135946                       Bettiol, Alberto     male
+12  sr:competitor:123886                 Kragh Andersen, Soeren     male
+13  sr:competitor:146110                      van Baarle, Dylan     male
+14  sr:competitor:147128                     Bonifazio, Niccolo     male
+15  sr:competitor:198734                     Rossetto, Stephane     male
+16  sr:competitor:208169                    Laporte, Christophe     male
+17  sr:competitor:197808                          Benoot, Tiesj     male
+18  sr:competitor:171236                       de Buyst, Jasper     male
+19  sr:competitor:196712                           Teuns, Dylan     male
+20  sr:competitor:174908                         Woods, Michael     male
+21  sr:competitor:123888                           Yates, Simon     male
+22  sr:competitor:123880              Valgren Andersen, Michael     male
+23  sr:competitor:199422                           Kung, Stefan     male
+24   sr:competitor:92871             Verona Quintanilla, Carlos     male
+25   sr:competitor:78671                           Molard, Rudy     male
+26   sr:competitor:80287                           Wellens, Tim     male
+27   sr:competitor:80289                            Houle, Hugo     male
+28   sr:competitor:81383          Janse van Rensburg, Reinhardt     male
+29   sr:competitor:88952                       Gougeard, Alexis     male
+30   sr:competitor:82007                             Aru, Fabio     male
+31   sr:competitor:91766                        Barguil, Warren     male
+32   sr:competitor:91768                     Vuillermoz, Alexis     male
+33   sr:competitor:93161                         Lampaert, Yves     male
+34  sr:competitor:123874                   Nielsen, Magnus Cort     male
+35   sr:competitor:93179                          Arndt, Nikias     male
+36   sr:competitor:93813                       Lutsenko, Alexey     male
+37   sr:competitor:93811                 Fraile Matarranz, Omar     male
+38   sr:competitor:94613                   Perichon, Pierre-Luc     male
+39   sr:competitor:95635                 Reichenbach, Sebastien     male
+40  sr:competitor:146340                             Haga, Chad     male
+41  sr:competitor:101459                       Berhane, Natnael     male
+42  sr:competitor:123856                    Bystroem, Sven Erik     male
+43  sr:competitor:318361                 Schachmann, Maximilian     male
+44  sr:competitor:226716                          Skujins, Toms     male
+45   sr:competitor:67014                         Bardet, Romain     male
+46  sr:competitor:310574                     Mas Nicolau, Enric     male
+47  sr:competitor:249457                           Politt, Nils     male
+48  sr:competitor:246981                      Calmejane, Lilian     male
+49  sr:competitor:248863                        Bernard, Julien     male
+50  sr:competitor:254335                      Martin, Guillaume     male
+51  sr:competitor:313921                           Bernal, Egan     male
+52  sr:competitor:282491                       Grellier, Fabien     male
+53  sr:competitor:286739                         de Gendt, Aime     male
+54  sr:competitor:313919                   Garcia Cortina, Ivan     male
+55  sr:competitor:319169                Jansen Groendahl, Amund     male
+56  sr:competitor:226972 Richeze Araquistain, Ariel Maximiliano     male
+57  sr:competitor:317941                         Kamna, Lennard     male
+58  sr:competitor:323145                           Gaudu, David     male
+59  sr:competitor:325989                         Perez, Anthony     male
+60  sr:competitor:329997                          Gesbert, Elie     male
+61  sr:competitor:330003                         Ourselin, Paul     male
+62  sr:competitor:353504                         Van Aert, Wout     male
+63  sr:competitor:379864                      Cosnefroy, Benoit     male
+64  sr:competitor:379848                      Philipsen, Jasper     male
+65  sr:competitor:241178                         Bevin, Patrick     male
+66  sr:competitor:248853                       de Plus, Laurens     male
+67  sr:competitor:198722                        Teunissen, Mike     male
+68  sr:competitor:198994                        Turgis, Anthony     male
+69  sr:competitor:196754                        Ledanois, Kevin     male
+70  sr:competitor:254977                     Wisniowski, Lukasz     male
+71  sr:competitor:194902                        Konrad, Patrick     male
+72  sr:competitor:219922                     Groenewegen, Dylan     male
+73  sr:competitor:197934                        Naesen, Olivier     male
+74  sr:competitor:196762                    Soler Gimenez, Marc     male
+75  sr:competitor:196774                      Backaert, Fredrik     male
+76  sr:competitor:198720                         Rosskopf, Joey     male
+77  sr:competitor:250457                         Moscon, Gianni     male
+78  sr:competitor:323211                       Meurisse, Xandro     male
+79  sr:competitor:201073                      Buchmann, Emanuel     male
+80  sr:competitor:226826                     Postlberger, Lukas     male
+81  sr:competitor:252831                        Ciccone, Giulio     male
+82  sr:competitor:246979                  Eiking, Odd Christian     male
+83  sr:competitor:247361                     Muhlberger, Gregor     male
+84  sr:competitor:318333                    Wurtz Schmidt, Mads     male
+85  sr:competitor:318335                        Asgreen, Kasper     male
+86  sr:competitor:221492                        Goncalves, Jose     male
+87   sr:competitor:69216                        Bennett, George     male
+88   sr:competitor:66830                  Laengen, Vegard Stake     male
+89   sr:competitor:26697                 Sanchez Gil, Luis Leon     male
+90   sr:competitor:27911                          Roux, Anthony     male
+91   sr:competitor:27768                        Thomas, Geraint     male
+92   sr:competitor:27770                        Fuglsang, Jakob     male
+93   sr:competitor:27851                           Impey, Daryl     male
+94   sr:competitor:27883                         Kangert, Tanel     male
+95   sr:competitor:27884                  Hagen, Edvald Boasson     male
+96   sr:competitor:27886                           Martin, Tony     male
+97   sr:competitor:27895                         Mollema, Bauke     male
+98   sr:competitor:27907                         Frank, Mathias     male
+99   sr:competitor:27913                         Offredo, Yoann     male
+100  sr:competitor:27667                          Clarke, Simon     male
+101  sr:competitor:27916                         Taaramae, Rein     male
+102  sr:competitor:27922                          Simon, Julien     male
+103  sr:competitor:27926                          Porte, Richie     male
+104  sr:competitor:27968                          Bouet, Maxime     male
+105  sr:competitor:27970                         Martin, Daniel     male
+106  sr:competitor:41621                           Kluge, Roger     male
+107  sr:competitor:34530            Faria Da Costa, Rui Alberto     male
+108  sr:competitor:44301                         Gallopin, Tony     male
+109  sr:competitor:27762                         Cherel, Mikael     male
+110  sr:competitor:27654                         Terpstra, Niki     male
+111  sr:competitor:34405                         Amador, Andrey     male
+112  sr:competitor:27072                      Burghardt, Marcus     male
+113  sr:competitor:26766                       Bak, Lars Ytting     male
+114  sr:competitor:26792                       Nibali, Vincenzo     male
+115  sr:competitor:26822                          De Kort, Koen     male
+116  sr:competitor:26862                        Monfort, Maxime     male
+117  sr:competitor:26921                         Roche, Nicolas     male
+118  sr:competitor:26931                         Erviti, Imanol     male
+119  sr:competitor:26973                         Greipel, Andre     male
+120  sr:competitor:27050                         Moinard, Amael     male
+121  sr:competitor:27183                       Cummings, Steven     male
+122  sr:competitor:27623                     Van Avermaet, Greg     male
+123  sr:competitor:27345                        Uran, Rigoberto     male
+124  sr:competitor:27397                        Bonnet, William     male
+125  sr:competitor:27407                   Langeveld, Sebastian     male
+126  sr:competitor:27412                         Pauwels, Serge     male
+127  sr:competitor:27446                       Kreuziger, Roman     male
+128  sr:competitor:27499                        Schaer, Michael     male
+129  sr:competitor:27603                    Ladagnous, Matthieu     male
+130  sr:competitor:27620                        Devenyns, Dries     male
+131  sr:competitor:35498                    Van Garderen, Tejay     male
+132  sr:competitor:34406                            Oss, Daniel     male
+133  sr:competitor:68002                          Haller, Marco     male
+134  sr:competitor:50026                       Nizzolo, Giacomo     male
+135  sr:competitor:67711             Henao Montoya, Sergio Luis     male
+136  sr:competitor:47984                        Durbridge, Luke     male
+137  sr:competitor:47989                       Hepburn, Michael     male
+138  sr:competitor:49209                         King, Benjamin     male
+139  sr:competitor:49569                        Vachon, Florian     male
+140  sr:competitor:49953                  de Marchi, Alessandro     male
+141  sr:competitor:49955                      Pasqualon, Andrea     male
+142  sr:competitor:50044                        Quintana, Nairo     male
+143  sr:competitor:50032                          Edet, Nicolas     male
+144  sr:competitor:50287                     Landa Meana, Mikel     male
+145  sr:competitor:50048                           Tratnik, Jan     male
+146  sr:competitor:50313                      van Melsen, Kevin     male
+147  sr:competitor:50588                      Debusschere, Jens     male
+148  sr:competitor:50710                   Herrada Lopez, Jesus     male
+149  sr:competitor:51780                          Bilbao, Pello     male
+150  sr:competitor:55679               Juul-Jensen, Christopher     male
+151  sr:competitor:54471                        Trentin, Matteo     male
+152  sr:competitor:62830                       Kelderman, Wilco     male
+153  sr:competitor:50288                    Kwiatkowski, Michal     male
+154  sr:competitor:50285                             Rowe, Luke     male
+155  sr:competitor:49690                        Caruso, Damiano     male
+156  sr:competitor:39813                         Sicard, Romain     male
+157  sr:competitor:41433                    Kristoff, Alexander     male
+158  sr:competitor:35401                       De Gendt, Thomas     male
+159  sr:competitor:44092                          Viviani, Elia     male
+160  sr:competitor:35470               Izagirre Insausti, Gorka     male
+161  sr:competitor:35557                         Geschke, Simon     male
+162  sr:competitor:35558                          Poels, Wouter     male
+163  sr:competitor:36863                      Moerkoev, Michael     male
+164  sr:competitor:50262  Santos Simoes Oliveira, Nelson Filipe     male
+165  sr:competitor:39816                         Pinot, Thibaut     male
+166  sr:competitor:50283                       Colbrelli, Sonny     male
+167  sr:competitor:39819          Castroviejo, Nicolas Jonathan     male
+168  sr:competitor:39823                           Sagan, Peter     male
+169  sr:competitor:39828                      Matthews, Michael     male
+170  sr:competitor:39829                          Dennis, Rohan     male
+171  sr:competitor:41623                       Keukeleire, Jens     male
+172  sr:competitor:41444                         Felline, Fabio     male
+173  sr:competitor:41446                     Kruijswijk, Steven     male
+174  sr:competitor:42654                     Delaplace, Anthony     male
+175  sr:competitor:50281                          Dowsett, Alex     male
+176 sr:competitor:532557                              Bol, Cees     male
+     nationality.x country_code.x              team.id
+1            Spain            ESP  sr:competitor:26600
+2        Australia            AUS  sr:competitor:62812
+3    Great Britain            GBR  sr:competitor:62812
+4      New Zealand            NZL  sr:competitor:27747
+5           Russia            RUS  sr:competitor:33029
+6        Australia            AUS  sr:competitor:27616
+7         Slovenia            SVN  sr:competitor:26395
+8           France            FRA  sr:competitor:26520
+9          Germany            DEU  sr:competitor:33029
+10         Belgium            BEL  sr:competitor:62896
+11           Italy            ITA  sr:competitor:27747
+12         Denmark            DNK sr:competitor:310638
+13     Netherlands            NLD  sr:competitor:39815
+14           Italy            ITA sr:competitor:246991
+15          France            FRA  sr:competitor:26495
+16          France            FRA  sr:competitor:26495
+17         Belgium            BEL  sr:competitor:27616
+18         Belgium            BEL  sr:competitor:27616
+19         Belgium            BEL  sr:competitor:26395
+20          Canada            CAN  sr:competitor:27747
+21   Great Britain            GBR  sr:competitor:62812
+22         Denmark            DNK  sr:competitor:80955
+23     Switzerland            CHE  sr:competitor:26516
+24           Spain            ESP  sr:competitor:26600
+25          France            FRA  sr:competitor:26516
+26         Belgium            BEL  sr:competitor:27616
+27          Canada            CAN  sr:competitor:26598
+28    South Africa            ZAF  sr:competitor:80955
+29          France            FRA  sr:competitor:26519
+30           Italy            ITA sr:competitor:310636
+31          France            FRA sr:competitor:246989
+32          France            FRA  sr:competitor:26519
+33         Belgium            BEL  sr:competitor:26520
+34         Denmark            DNK  sr:competitor:26598
+35         Germany            DEU sr:competitor:310638
+36      Kazakhstan            KAZ  sr:competitor:26598
+37           Spain            ESP  sr:competitor:26598
+38          France            FRA  sr:competitor:26495
+39     Switzerland            CHE  sr:competitor:26516
+40             USA            USA sr:competitor:310638
+41         Eritrea            ERI  sr:competitor:26495
+42          Norway            NOR sr:competitor:310636
+43         Germany            DEU  sr:competitor:50271
+44          Latvia            LVA  sr:competitor:62896
+45          France            FRA  sr:competitor:26519
+46           Spain            ESP  sr:competitor:26520
+47         Germany            DEU  sr:competitor:33029
+48          France            FRA sr:competitor:246991
+49          France            FRA  sr:competitor:62896
+50          France            FRA  sr:competitor:49122
+51        Colombia            COL  sr:competitor:39815
+52          France            FRA sr:competitor:246991
+53         Belgium            BEL  sr:competitor:49122
+54           Spain            ESP  sr:competitor:26395
+55          Norway            NOR sr:competitor:189354
+56       Argentina            ARG  sr:competitor:26520
+57         Germany            DEU sr:competitor:310638
+58          France            FRA  sr:competitor:26516
+59          France            FRA  sr:competitor:26495
+60          France            FRA sr:competitor:246989
+61          France            FRA sr:competitor:246991
+62         Belgium            BEL sr:competitor:189354
+63          France            FRA  sr:competitor:26519
+64         Belgium            BEL sr:competitor:310636
+65     New Zealand            NZL  sr:competitor:27981
+66         Belgium            BEL sr:competitor:189354
+67     Netherlands            NLD sr:competitor:189354
+68          France            FRA sr:competitor:246991
+69          France            FRA sr:competitor:246989
+70          Poland            POL  sr:competitor:27981
+71         Austria            AUT  sr:competitor:50271
+72     Netherlands            NLD sr:competitor:189354
+73         Belgium            BEL  sr:competitor:26519
+74           Spain            ESP  sr:competitor:26600
+75         Belgium            BEL  sr:competitor:49122
+76             USA            USA  sr:competitor:27981
+77           Italy            ITA  sr:competitor:39815
+78         Belgium            BEL  sr:competitor:49122
+79         Germany            DEU  sr:competitor:50271
+80         Austria            AUT  sr:competitor:50271
+81           Italy            ITA  sr:competitor:62896
+82          Norway            NOR  sr:competitor:49122
+83         Austria            AUT  sr:competitor:50271
+84         Denmark            DNK  sr:competitor:33029
+85         Denmark            DNK  sr:competitor:26520
+86        Portugal            PRT  sr:competitor:33029
+87     New Zealand            NZL sr:competitor:189354
+88          Norway            NOR sr:competitor:310636
+89           Spain            ESP  sr:competitor:26598
+90          France            FRA  sr:competitor:26516
+91   Great Britain            GBR  sr:competitor:39815
+92         Denmark            DNK  sr:competitor:26598
+93    South Africa            ZAF  sr:competitor:62812
+94         Estonia            EST  sr:competitor:27747
+95          Norway            NOR  sr:competitor:80955
+96         Germany            DEU sr:competitor:189354
+97     Netherlands            NLD  sr:competitor:62896
+98     Switzerland            CHE  sr:competitor:26519
+99          France            FRA  sr:competitor:49122
+100      Australia            AUS  sr:competitor:27747
+101        Estonia            EST sr:competitor:246991
+102         France            FRA  sr:competitor:26495
+103      Australia            AUS  sr:competitor:62896
+104         France            FRA sr:competitor:246989
+105        Ireland            IRL sr:competitor:310636
+106        Germany            DEU  sr:competitor:27616
+107       Portugal            PRT sr:competitor:310636
+108         France            FRA  sr:competitor:26519
+109         France            FRA  sr:competitor:26519
+110    Netherlands            NLD sr:competitor:246991
+111     Costa Rica            CRI  sr:competitor:26600
+112        Germany            DEU  sr:competitor:50271
+113        Denmark            DNK  sr:competitor:80955
+114          Italy            ITA  sr:competitor:26395
+115    Netherlands            NLD  sr:competitor:62896
+116         France            FRA  sr:competitor:27616
+117        Ireland            IRL sr:competitor:310638
+118          Spain            ESP  sr:competitor:26600
+119        Germany            DEU sr:competitor:246989
+120         France            FRA sr:competitor:246989
+121  Great Britain            GBR  sr:competitor:80955
+122        Belgium            BEL  sr:competitor:27981
+123       Colombia            COL  sr:competitor:27747
+124         France            FRA  sr:competitor:26516
+125    Netherlands            NLD  sr:competitor:27747
+126        Belgium            BEL  sr:competitor:27981
+127 Czech Republic            CZE  sr:competitor:80955
+128    Switzerland            CHE  sr:competitor:27981
+129         France            FRA  sr:competitor:26516
+130        Belgium            BEL  sr:competitor:26520
+131            USA            USA  sr:competitor:27747
+132          Italy            ITA  sr:competitor:50271
+133        Austria            AUT  sr:competitor:33029
+134          Italy            ITA  sr:competitor:80955
+135       Colombia            COL sr:competitor:310636
+136      Australia            AUS  sr:competitor:62812
+137      Australia            AUS  sr:competitor:62812
+138            USA            USA  sr:competitor:80955
+139         France            FRA sr:competitor:246989
+140          Italy            ITA  sr:competitor:27981
+141          Italy            ITA  sr:competitor:49122
+142       Colombia            COL  sr:competitor:26600
+143         France            FRA  sr:competitor:26495
+144          Spain            ESP  sr:competitor:26600
+145       Slovenia            SVN  sr:competitor:26395
+146        Belgium            BEL  sr:competitor:49122
+147        Belgium            BEL  sr:competitor:33029
+148          Spain            ESP  sr:competitor:26495
+149          Spain            ESP  sr:competitor:26598
+150        Denmark            DNK  sr:competitor:62812
+151          Italy            ITA  sr:competitor:62812
+152    Netherlands            NLD sr:competitor:310638
+153         Poland            POL  sr:competitor:39815
+154  Great Britain            GBR  sr:competitor:39815
+155          Italy            ITA  sr:competitor:26395
+156         France            FRA sr:competitor:246991
+157         Norway            NOR sr:competitor:310636
+158        Belgium            BEL  sr:competitor:27616
+159          Italy            ITA  sr:competitor:26520
+160          Spain            ESP  sr:competitor:26598
+161        Germany            DEU  sr:competitor:27981
+162    Netherlands            NLD  sr:competitor:39815
+163        Denmark            DNK  sr:competitor:26520
+164       Portugal            PRT  sr:competitor:26600
+165         France            FRA  sr:competitor:26516
+166          Italy            ITA  sr:competitor:26395
+167          Spain            ESP  sr:competitor:39815
+168       Slovakia            SVK  sr:competitor:50271
+169      Australia            AUS sr:competitor:310638
+170      Australia            AUS  sr:competitor:26395
+171        Belgium            BEL  sr:competitor:27616
+172          Italy            ITA  sr:competitor:62896
+173    Netherlands            NLD sr:competitor:189354
+174         France            FRA sr:competitor:246989
+175  Great Britain            GBR  sr:competitor:33029
+176    Netherlands            NLD sr:competitor:310638
+                    team.name team.gender     team.nationality
+1               Movistar Team        male                Spain
+2            Mitchelton-Scott        male            Australia
+3            Mitchelton-Scott        male            Australia
+4          EF Education First        male                  USA
+5      Team Katusha - Alpecin        male          Switzerland
+6                Lotto Soudal        male              Belgium
+7            Bahrain - Merida        male              Bahrain
+8   Deceuninck - Quick - Step        male              Belgium
+9      Team Katusha - Alpecin        male          Switzerland
+10             Trek–Segafredo        male                  USA
+11         EF Education First        male                  USA
+12                Team Sunweb        male          Netherlands
+13                 Team Ineos        male        Great Britain
+14             Direct Energie        male               France
+15                    Cofidis        male               France
+16                    Cofidis        male               France
+17               Lotto Soudal        male              Belgium
+18               Lotto Soudal        male              Belgium
+19           Bahrain - Merida        male              Bahrain
+20         EF Education First        male                  USA
+21           Mitchelton-Scott        male            Australia
+22        Team Dimension Data        male         South Africa
+23             Groupama – FDJ        male               France
+24              Movistar Team        male                Spain
+25             Groupama – FDJ        male               France
+26               Lotto Soudal        male              Belgium
+27            Astana Pro Team        male           Kazakhstan
+28        Team Dimension Data        male         South Africa
+29           Ag2r La Mondiale        male               France
+30          UAE Team Emirates        male United Arab Emirates
+31            Fortuneo-Samsic        male               France
+32           Ag2r La Mondiale        male               France
+33  Deceuninck - Quick - Step        male              Belgium
+34            Astana Pro Team        male           Kazakhstan
+35                Team Sunweb        male          Netherlands
+36            Astana Pro Team        male           Kazakhstan
+37            Astana Pro Team        male           Kazakhstan
+38                    Cofidis        male               France
+39             Groupama – FDJ        male               France
+40                Team Sunweb        male          Netherlands
+41                    Cofidis        male               France
+42          UAE Team Emirates        male United Arab Emirates
+43           Bora - Hansgrohe        male              Germany
+44             Trek–Segafredo        male                  USA
+45           Ag2r La Mondiale        male               France
+46  Deceuninck - Quick - Step        male              Belgium
+47     Team Katusha - Alpecin        male          Switzerland
+48             Direct Energie        male               France
+49             Trek–Segafredo        male                  USA
+50        Wanty Groupe Gobert        male              Belgium
+51                 Team Ineos        male        Great Britain
+52             Direct Energie        male               France
+53        Wanty Groupe Gobert        male              Belgium
+54           Bahrain - Merida        male              Bahrain
+55         Team Jumbo - Visma        male          Netherlands
+56  Deceuninck - Quick - Step        male              Belgium
+57                Team Sunweb        male          Netherlands
+58             Groupama – FDJ        male               France
+59                    Cofidis        male               France
+60            Fortuneo-Samsic        male               France
+61             Direct Energie        male               France
+62         Team Jumbo - Visma        male          Netherlands
+63           Ag2r La Mondiale        male               France
+64          UAE Team Emirates        male United Arab Emirates
+65                   CCC Team        male               Poland
+66         Team Jumbo - Visma        male          Netherlands
+67         Team Jumbo - Visma        male          Netherlands
+68             Direct Energie        male               France
+69            Fortuneo-Samsic        male               France
+70                   CCC Team        male               Poland
+71           Bora - Hansgrohe        male              Germany
+72         Team Jumbo - Visma        male          Netherlands
+73           Ag2r La Mondiale        male               France
+74              Movistar Team        male                Spain
+75        Wanty Groupe Gobert        male              Belgium
+76                   CCC Team        male               Poland
+77                 Team Ineos        male        Great Britain
+78        Wanty Groupe Gobert        male              Belgium
+79           Bora - Hansgrohe        male              Germany
+80           Bora - Hansgrohe        male              Germany
+81             Trek–Segafredo        male                  USA
+82        Wanty Groupe Gobert        male              Belgium
+83           Bora - Hansgrohe        male              Germany
+84     Team Katusha - Alpecin        male          Switzerland
+85  Deceuninck - Quick - Step        male              Belgium
+86     Team Katusha - Alpecin        male          Switzerland
+87         Team Jumbo - Visma        male          Netherlands
+88          UAE Team Emirates        male United Arab Emirates
+89            Astana Pro Team        male           Kazakhstan
+90             Groupama – FDJ        male               France
+91                 Team Ineos        male        Great Britain
+92            Astana Pro Team        male           Kazakhstan
+93           Mitchelton-Scott        male            Australia
+94         EF Education First        male                  USA
+95        Team Dimension Data        male         South Africa
+96         Team Jumbo - Visma        male          Netherlands
+97             Trek–Segafredo        male                  USA
+98           Ag2r La Mondiale        male               France
+99        Wanty Groupe Gobert        male              Belgium
+100        EF Education First        male                  USA
+101            Direct Energie        male               France
+102                   Cofidis        male               France
+103            Trek–Segafredo        male                  USA
+104           Fortuneo-Samsic        male               France
+105         UAE Team Emirates        male United Arab Emirates
+106              Lotto Soudal        male              Belgium
+107         UAE Team Emirates        male United Arab Emirates
+108          Ag2r La Mondiale        male               France
+109          Ag2r La Mondiale        male               France
+110            Direct Energie        male               France
+111             Movistar Team        male                Spain
+112          Bora - Hansgrohe        male              Germany
+113       Team Dimension Data        male         South Africa
+114          Bahrain - Merida        male              Bahrain
+115            Trek–Segafredo        male                  USA
+116              Lotto Soudal        male              Belgium
+117               Team Sunweb        male          Netherlands
+118             Movistar Team        male                Spain
+119           Fortuneo-Samsic        male               France
+120           Fortuneo-Samsic        male               France
+121       Team Dimension Data        male         South Africa
+122                  CCC Team        male               Poland
+123        EF Education First        male                  USA
+124            Groupama – FDJ        male               France
+125        EF Education First        male                  USA
+126                  CCC Team        male               Poland
+127       Team Dimension Data        male         South Africa
+128                  CCC Team        male               Poland
+129            Groupama – FDJ        male               France
+130 Deceuninck - Quick - Step        male              Belgium
+131        EF Education First        male                  USA
+132          Bora - Hansgrohe        male              Germany
+133    Team Katusha - Alpecin        male          Switzerland
+134       Team Dimension Data        male         South Africa
+135         UAE Team Emirates        male United Arab Emirates
+136          Mitchelton-Scott        male            Australia
+137          Mitchelton-Scott        male            Australia
+138       Team Dimension Data        male         South Africa
+139           Fortuneo-Samsic        male               France
+140                  CCC Team        male               Poland
+141       Wanty Groupe Gobert        male              Belgium
+142             Movistar Team        male                Spain
+143                   Cofidis        male               France
+144             Movistar Team        male                Spain
+145          Bahrain - Merida        male              Bahrain
+146       Wanty Groupe Gobert        male              Belgium
+147    Team Katusha - Alpecin        male          Switzerland
+148                   Cofidis        male               France
+149           Astana Pro Team        male           Kazakhstan
+150          Mitchelton-Scott        male            Australia
+151          Mitchelton-Scott        male            Australia
+152               Team Sunweb        male          Netherlands
+153                Team Ineos        male        Great Britain
+154                Team Ineos        male        Great Britain
+155          Bahrain - Merida        male              Bahrain
+156            Direct Energie        male               France
+157         UAE Team Emirates        male United Arab Emirates
+158              Lotto Soudal        male              Belgium
+159 Deceuninck - Quick - Step        male              Belgium
+160           Astana Pro Team        male           Kazakhstan
+161                  CCC Team        male               Poland
+162                Team Ineos        male        Great Britain
+163 Deceuninck - Quick - Step        male              Belgium
+164             Movistar Team        male                Spain
+165            Groupama – FDJ        male               France
+166          Bahrain - Merida        male              Bahrain
+167                Team Ineos        male        Great Britain
+168          Bora - Hansgrohe        male              Germany
+169               Team Sunweb        male          Netherlands
+170          Bahrain - Merida        male              Bahrain
+171              Lotto Soudal        male              Belgium
+172            Trek–Segafredo        male                  USA
+173        Team Jumbo - Visma        male          Netherlands
+174           Fortuneo-Samsic        male               France
+175    Team Katusha - Alpecin        male          Switzerland
+176               Team Sunweb        male          Netherlands
+    team.country_code description                    name.y gender.y
+1                 ESP     Stage 2             Movistar Team     male
+2                 AUS     Stage 2          Mitchelton-Scott     male
+3                 AUS     Stage 2          Mitchelton-Scott     male
+4                 USA     Stage 2        EF Education First     male
+5                 CHE     Stage 2    Team Katusha - Alpecin     male
+6                 BEL     Stage 2              Lotto Soudal     male
+7                 BHR     Stage 2          Bahrain - Merida     male
+8                 BEL     Stage 2 Deceuninck - Quick - Step     male
+9                 CHE     Stage 2    Team Katusha - Alpecin     male
+10                USA     Stage 2            Trek–Segafredo     male
+11                USA     Stage 2        EF Education First     male
+12                NLD     Stage 2               Team Sunweb     male
+13                GBR     Stage 2                Team Ineos     male
+14                FRA     Stage 2            Direct Energie     male
+15                FRA     Stage 2                   Cofidis     male
+16                FRA     Stage 2                   Cofidis     male
+17                BEL     Stage 2              Lotto Soudal     male
+18                BEL     Stage 2              Lotto Soudal     male
+19                BHR     Stage 2          Bahrain - Merida     male
+20                USA     Stage 2        EF Education First     male
+21                AUS     Stage 2          Mitchelton-Scott     male
+22                ZAF     Stage 2       Team Dimension Data     male
+23                FRA     Stage 2            Groupama – FDJ     male
+24                ESP     Stage 2             Movistar Team     male
+25                FRA     Stage 2            Groupama – FDJ     male
+26                BEL     Stage 2              Lotto Soudal     male
+27                KAZ     Stage 2           Astana Pro Team     male
+28                ZAF     Stage 2       Team Dimension Data     male
+29                FRA     Stage 2          Ag2r La Mondiale     male
+30                ARE     Stage 2         UAE Team Emirates     male
+31                FRA     Stage 2           Fortuneo-Samsic     male
+32                FRA     Stage 2          Ag2r La Mondiale     male
+33                BEL     Stage 2 Deceuninck - Quick - Step     male
+34                KAZ     Stage 2           Astana Pro Team     male
+35                NLD     Stage 2               Team Sunweb     male
+36                KAZ     Stage 2           Astana Pro Team     male
+37                KAZ     Stage 2           Astana Pro Team     male
+38                FRA     Stage 2                   Cofidis     male
+39                FRA     Stage 2            Groupama – FDJ     male
+40                NLD     Stage 2               Team Sunweb     male
+41                FRA     Stage 2                   Cofidis     male
+42                ARE     Stage 2         UAE Team Emirates     male
+43                DEU     Stage 2          Bora - Hansgrohe     male
+44                USA     Stage 2            Trek–Segafredo     male
+45                FRA     Stage 2          Ag2r La Mondiale     male
+46                BEL     Stage 2 Deceuninck - Quick - Step     male
+47                CHE     Stage 2    Team Katusha - Alpecin     male
+48                FRA     Stage 2            Direct Energie     male
+49                USA     Stage 2            Trek–Segafredo     male
+50                BEL     Stage 2       Wanty Groupe Gobert     male
+51                GBR     Stage 2                Team Ineos     male
+52                FRA     Stage 2            Direct Energie     male
+53                BEL     Stage 2       Wanty Groupe Gobert     male
+54                BHR     Stage 2          Bahrain - Merida     male
+55                NLD     Stage 2        Team Jumbo - Visma     male
+56                BEL     Stage 2 Deceuninck - Quick - Step     male
+57                NLD     Stage 2               Team Sunweb     male
+58                FRA     Stage 2            Groupama – FDJ     male
+59                FRA     Stage 2                   Cofidis     male
+60                FRA     Stage 2           Fortuneo-Samsic     male
+61                FRA     Stage 2            Direct Energie     male
+62                NLD     Stage 2        Team Jumbo - Visma     male
+63                FRA     Stage 2          Ag2r La Mondiale     male
+64                ARE     Stage 2         UAE Team Emirates     male
+65                POL     Stage 2                  CCC Team     male
+66                NLD     Stage 2        Team Jumbo - Visma     male
+67                NLD     Stage 2        Team Jumbo - Visma     male
+68                FRA     Stage 2            Direct Energie     male
+69                FRA     Stage 2           Fortuneo-Samsic     male
+70                POL     Stage 2                  CCC Team     male
+71                DEU     Stage 2          Bora - Hansgrohe     male
+72                NLD     Stage 2        Team Jumbo - Visma     male
+73                FRA     Stage 2          Ag2r La Mondiale     male
+74                ESP     Stage 2             Movistar Team     male
+75                BEL     Stage 2       Wanty Groupe Gobert     male
+76                POL     Stage 2                  CCC Team     male
+77                GBR     Stage 2                Team Ineos     male
+78                BEL     Stage 2       Wanty Groupe Gobert     male
+79                DEU     Stage 2          Bora - Hansgrohe     male
+80                DEU     Stage 2          Bora - Hansgrohe     male
+81                USA     Stage 2            Trek–Segafredo     male
+82                BEL     Stage 2       Wanty Groupe Gobert     male
+83                DEU     Stage 2          Bora - Hansgrohe     male
+84                CHE     Stage 2    Team Katusha - Alpecin     male
+85                BEL     Stage 2 Deceuninck - Quick - Step     male
+86                CHE     Stage 2    Team Katusha - Alpecin     male
+87                NLD     Stage 2        Team Jumbo - Visma     male
+88                ARE     Stage 2         UAE Team Emirates     male
+89                KAZ     Stage 2           Astana Pro Team     male
+90                FRA     Stage 2            Groupama – FDJ     male
+91                GBR     Stage 2                Team Ineos     male
+92                KAZ     Stage 2           Astana Pro Team     male
+93                AUS     Stage 2          Mitchelton-Scott     male
+94                USA     Stage 2        EF Education First     male
+95                ZAF     Stage 2       Team Dimension Data     male
+96                NLD     Stage 2        Team Jumbo - Visma     male
+97                USA     Stage 2            Trek–Segafredo     male
+98                FRA     Stage 2          Ag2r La Mondiale     male
+99                BEL     Stage 2       Wanty Groupe Gobert     male
+100               USA     Stage 2        EF Education First     male
+101               FRA     Stage 2            Direct Energie     male
+102               FRA     Stage 2                   Cofidis     male
+103               USA     Stage 2            Trek–Segafredo     male
+104               FRA     Stage 2           Fortuneo-Samsic     male
+105               ARE     Stage 2         UAE Team Emirates     male
+106               BEL     Stage 2              Lotto Soudal     male
+107               ARE     Stage 2         UAE Team Emirates     male
+108               FRA     Stage 2          Ag2r La Mondiale     male
+109               FRA     Stage 2          Ag2r La Mondiale     male
+110               FRA     Stage 2            Direct Energie     male
+111               ESP     Stage 2             Movistar Team     male
+112               DEU     Stage 2          Bora - Hansgrohe     male
+113               ZAF     Stage 2       Team Dimension Data     male
+114               BHR     Stage 2          Bahrain - Merida     male
+115               USA     Stage 2            Trek–Segafredo     male
+116               BEL     Stage 2              Lotto Soudal     male
+117               NLD     Stage 2               Team Sunweb     male
+118               ESP     Stage 2             Movistar Team     male
+119               FRA     Stage 2           Fortuneo-Samsic     male
+120               FRA     Stage 2           Fortuneo-Samsic     male
+121               ZAF     Stage 2       Team Dimension Data     male
+122               POL     Stage 2                  CCC Team     male
+123               USA     Stage 2        EF Education First     male
+124               FRA     Stage 2            Groupama – FDJ     male
+125               USA     Stage 2        EF Education First     male
+126               POL     Stage 2                  CCC Team     male
+127               ZAF     Stage 2       Team Dimension Data     male
+128               POL     Stage 2                  CCC Team     male
+129               FRA     Stage 2            Groupama – FDJ     male
+130               BEL     Stage 2 Deceuninck - Quick - Step     male
+131               USA     Stage 2        EF Education First     male
+132               DEU     Stage 2          Bora - Hansgrohe     male
+133               CHE     Stage 2    Team Katusha - Alpecin     male
+134               ZAF     Stage 2       Team Dimension Data     male
+135               ARE     Stage 2         UAE Team Emirates     male
+136               AUS     Stage 2          Mitchelton-Scott     male
+137               AUS     Stage 2          Mitchelton-Scott     male
+138               ZAF     Stage 2       Team Dimension Data     male
+139               FRA     Stage 2           Fortuneo-Samsic     male
+140               POL     Stage 2                  CCC Team     male
+141               BEL     Stage 2       Wanty Groupe Gobert     male
+142               ESP     Stage 2             Movistar Team     male
+143               FRA     Stage 2                   Cofidis     male
+144               ESP     Stage 2             Movistar Team     male
+145               BHR     Stage 2          Bahrain - Merida     male
+146               BEL     Stage 2       Wanty Groupe Gobert     male
+147               CHE     Stage 2    Team Katusha - Alpecin     male
+148               FRA     Stage 2                   Cofidis     male
+149               KAZ     Stage 2           Astana Pro Team     male
+150               AUS     Stage 2          Mitchelton-Scott     male
+151               AUS     Stage 2          Mitchelton-Scott     male
+152               NLD     Stage 2               Team Sunweb     male
+153               GBR     Stage 2                Team Ineos     male
+154               GBR     Stage 2                Team Ineos     male
+155               BHR     Stage 2          Bahrain - Merida     male
+156               FRA     Stage 2            Direct Energie     male
+157               ARE     Stage 2         UAE Team Emirates     male
+158               BEL     Stage 2              Lotto Soudal     male
+159               BEL     Stage 2 Deceuninck - Quick - Step     male
+160               KAZ     Stage 2           Astana Pro Team     male
+161               POL     Stage 2                  CCC Team     male
+162               GBR     Stage 2                Team Ineos     male
+163               BEL     Stage 2 Deceuninck - Quick - Step     male
+164               ESP     Stage 2             Movistar Team     male
+165               FRA     Stage 2            Groupama – FDJ     male
+166               BHR     Stage 2          Bahrain - Merida     male
+167               GBR     Stage 2                Team Ineos     male
+168               DEU     Stage 2          Bora - Hansgrohe     male
+169               NLD     Stage 2               Team Sunweb     male
+170               BHR     Stage 2          Bahrain - Merida     male
+171               BEL     Stage 2              Lotto Soudal     male
+172               USA     Stage 2            Trek–Segafredo     male
+173               NLD     Stage 2        Team Jumbo - Visma     male
+174               FRA     Stage 2           Fortuneo-Samsic     male
+175               CHE     Stage 2    Team Katusha - Alpecin     male
+176               NLD     Stage 2               Team Sunweb     male
+           nationality.y country_code.y result.team_time
+1                  Spain            ESP        +00:01.05
+2              Australia            AUS        +00:00.41
+3              Australia            AUS        +00:00.41
+4                    USA            USA        +00:00.28
+5            Switzerland            CHE        +00:00.26
+6                Belgium            BEL        +00:00.59
+7                Bahrain            BHR        +00:00.36
+8                Belgium            BEL        +00:00.21
+9            Switzerland            CHE        +00:00.26
+10                   USA            USA        +00:01.18
+11                   USA            USA        +00:00.28
+12           Netherlands            NLD        +00:00.26
+13         Great Britain            GBR        +00:00.20
+14                France            FRA        +00:01.42
+15                France            FRA        +00:00.53
+16                France            FRA        +00:00.53
+17               Belgium            BEL        +00:00.59
+18               Belgium            BEL        +00:00.59
+19               Bahrain            BHR        +00:00.36
+20                   USA            USA        +00:00.28
+21             Australia            AUS        +00:00.41
+22          South Africa            ZAF        +00:00.54
+23                France            FRA        +00:00.32
+24                 Spain            ESP        +00:01.05
+25                France            FRA        +00:00.32
+26               Belgium            BEL        +00:00.59
+27            Kazakhstan            KAZ        +00:00.41
+28          South Africa            ZAF        +00:00.54
+29                France            FRA        +00:01.19
+30  United Arab Emirates            ARE        +00:01.03
+31                France            FRA        +00:01.51
+32                France            FRA        +00:01.19
+33               Belgium            BEL        +00:00.21
+34            Kazakhstan            KAZ        +00:00.41
+35           Netherlands            NLD        +00:00.26
+36            Kazakhstan            KAZ        +00:00.41
+37            Kazakhstan            KAZ        +00:00.41
+38                France            FRA        +00:00.53
+39                France            FRA        +00:00.32
+40           Netherlands            NLD        +00:00.26
+41                France            FRA        +00:00.53
+42  United Arab Emirates            ARE        +00:01.03
+43               Germany            DEU        +00:00.46
+44                   USA            USA        +00:01.18
+45                France            FRA        +00:01.19
+46               Belgium            BEL        +00:00.21
+47           Switzerland            CHE        +00:00.26
+48                France            FRA        +00:01.42
+49                   USA            USA        +00:01.18
+50               Belgium            BEL        +00:01.58
+51         Great Britain            GBR        +00:00.20
+52                France            FRA        +00:01.42
+53               Belgium            BEL        +00:01.58
+54               Bahrain            BHR        +00:00.36
+55           Netherlands            NLD         00:28.57
+56               Belgium            BEL        +00:00.21
+57           Netherlands            NLD        +00:00.26
+58                France            FRA        +00:00.32
+59                France            FRA        +00:00.53
+60                France            FRA        +00:01.51
+61                France            FRA        +00:01.42
+62           Netherlands            NLD         00:28.57
+63                France            FRA        +00:01.19
+64  United Arab Emirates            ARE        +00:01.03
+65                Poland            POL        +00:00.31
+66           Netherlands            NLD         00:28.57
+67           Netherlands            NLD         00:28.57
+68                France            FRA        +00:01.42
+69                France            FRA        +00:01.51
+70                Poland            POL        +00:00.31
+71               Germany            DEU        +00:00.46
+72           Netherlands            NLD         00:28.57
+73                France            FRA        +00:01.19
+74                 Spain            ESP        +00:01.05
+75               Belgium            BEL        +00:01.58
+76                Poland            POL        +00:00.31
+77         Great Britain            GBR        +00:00.20
+78               Belgium            BEL        +00:01.58
+79               Germany            DEU        +00:00.46
+80               Germany            DEU        +00:00.46
+81                   USA            USA        +00:01.18
+82               Belgium            BEL        +00:01.58
+83               Germany            DEU        +00:00.46
+84           Switzerland            CHE        +00:00.26
+85               Belgium            BEL        +00:00.21
+86           Switzerland            CHE        +00:00.26
+87           Netherlands            NLD         00:28.57
+88  United Arab Emirates            ARE        +00:01.03
+89            Kazakhstan            KAZ        +00:00.41
+90                France            FRA        +00:00.32
+91         Great Britain            GBR        +00:00.20
+92            Kazakhstan            KAZ        +00:00.41
+93             Australia            AUS        +00:00.41
+94                   USA            USA        +00:00.28
+95          South Africa            ZAF        +00:00.54
+96           Netherlands            NLD         00:28.57
+97                   USA            USA        +00:01.18
+98                France            FRA        +00:01.19
+99               Belgium            BEL        +00:01.58
+100                  USA            USA        +00:00.28
+101               France            FRA        +00:01.42
+102               France            FRA        +00:00.53
+103                  USA            USA        +00:01.18
+104               France            FRA        +00:01.51
+105 United Arab Emirates            ARE        +00:01.03
+106              Belgium            BEL        +00:00.59
+107 United Arab Emirates            ARE        +00:01.03
+108               France            FRA        +00:01.19
+109               France            FRA        +00:01.19
+110               France            FRA        +00:01.42
+111                Spain            ESP        +00:01.05
+112              Germany            DEU        +00:00.46
+113         South Africa            ZAF        +00:00.54
+114              Bahrain            BHR        +00:00.36
+115                  USA            USA        +00:01.18
+116              Belgium            BEL        +00:00.59
+117          Netherlands            NLD        +00:00.26
+118                Spain            ESP        +00:01.05
+119               France            FRA        +00:01.51
+120               France            FRA        +00:01.51
+121         South Africa            ZAF        +00:00.54
+122               Poland            POL        +00:00.31
+123                  USA            USA        +00:00.28
+124               France            FRA        +00:00.32
+125                  USA            USA        +00:00.28
+126               Poland            POL        +00:00.31
+127         South Africa            ZAF        +00:00.54
+128               Poland            POL        +00:00.31
+129               France            FRA        +00:00.32
+130              Belgium            BEL        +00:00.21
+131                  USA            USA        +00:00.28
+132              Germany            DEU        +00:00.46
+133          Switzerland            CHE        +00:00.26
+134         South Africa            ZAF        +00:00.54
+135 United Arab Emirates            ARE        +00:01.03
+136            Australia            AUS        +00:00.41
+137            Australia            AUS        +00:00.41
+138         South Africa            ZAF        +00:00.54
+139               France            FRA        +00:01.51
+140               Poland            POL        +00:00.31
+141              Belgium            BEL        +00:01.58
+142                Spain            ESP        +00:01.05
+143               France            FRA        +00:00.53
+144                Spain            ESP        +00:01.05
+145              Bahrain            BHR        +00:00.36
+146              Belgium            BEL        +00:01.58
+147          Switzerland            CHE        +00:00.26
+148               France            FRA        +00:00.53
+149           Kazakhstan            KAZ        +00:00.41
+150            Australia            AUS        +00:00.41
+151            Australia            AUS        +00:00.41
+152          Netherlands            NLD        +00:00.26
+153        Great Britain            GBR        +00:00.20
+154        Great Britain            GBR        +00:00.20
+155              Bahrain            BHR        +00:00.36
+156               France            FRA        +00:01.42
+157 United Arab Emirates            ARE        +00:01.03
+158              Belgium            BEL        +00:00.59
+159              Belgium            BEL        +00:00.21
+160           Kazakhstan            KAZ        +00:00.41
+161               Poland            POL        +00:00.31
+162        Great Britain            GBR        +00:00.20
+163              Belgium            BEL        +00:00.21
+164                Spain            ESP        +00:01.05
+165               France            FRA        +00:00.32
+166              Bahrain            BHR        +00:00.36
+167        Great Britain            GBR        +00:00.20
+168              Germany            DEU        +00:00.46
+169          Netherlands            NLD        +00:00.26
+170              Bahrain            BHR        +00:00.36
+171              Belgium            BEL        +00:00.59
+172                  USA            USA        +00:01.18
+173          Netherlands            NLD         00:28.57
+174               France            FRA        +00:01.51
+175          Switzerland            CHE        +00:00.26
+176          Netherlands            NLD        +00:00.26
+    result.team_time_ranking                 scheduled
+1                         17 2019-07-07T12:30:00+00:00
+2                         11 2019-07-07T12:30:00+00:00
+3                         11 2019-07-07T12:30:00+00:00
+4                          6 2019-07-07T12:30:00+00:00
+5                          5 2019-07-07T12:30:00+00:00
+6                         15 2019-07-07T12:30:00+00:00
+7                          9 2019-07-07T12:30:00+00:00
+8                          3 2019-07-07T12:30:00+00:00
+9                          5 2019-07-07T12:30:00+00:00
+10                        18 2019-07-07T12:30:00+00:00
+11                         6 2019-07-07T12:30:00+00:00
+12                         4 2019-07-07T12:30:00+00:00
+13                         2 2019-07-07T12:30:00+00:00
+14                        20 2019-07-07T12:30:00+00:00
+15                        13 2019-07-07T12:30:00+00:00
+16                        13 2019-07-07T12:30:00+00:00
+17                        15 2019-07-07T12:30:00+00:00
+18                        15 2019-07-07T12:30:00+00:00
+19                         9 2019-07-07T12:30:00+00:00
+20                         6 2019-07-07T12:30:00+00:00
+21                        11 2019-07-07T12:30:00+00:00
+22                        14 2019-07-07T12:30:00+00:00
+23                         8 2019-07-07T12:30:00+00:00
+24                        17 2019-07-07T12:30:00+00:00
+25                         8 2019-07-07T12:30:00+00:00
+26                        15 2019-07-07T12:30:00+00:00
+27                        10 2019-07-07T12:30:00+00:00
+28                        14 2019-07-07T12:30:00+00:00
+29                        19 2019-07-07T12:30:00+00:00
+30                        16 2019-07-07T12:30:00+00:00
+31                        21 2019-07-07T12:30:00+00:00
+32                        19 2019-07-07T12:30:00+00:00
+33                         3 2019-07-07T12:30:00+00:00
+34                        10 2019-07-07T12:30:00+00:00
+35                         4 2019-07-07T12:30:00+00:00
+36                        10 2019-07-07T12:30:00+00:00
+37                        10 2019-07-07T12:30:00+00:00
+38                        13 2019-07-07T12:30:00+00:00
+39                         8 2019-07-07T12:30:00+00:00
+40                         4 2019-07-07T12:30:00+00:00
+41                        13 2019-07-07T12:30:00+00:00
+42                        16 2019-07-07T12:30:00+00:00
+43                        12 2019-07-07T12:30:00+00:00
+44                        18 2019-07-07T12:30:00+00:00
+45                        19 2019-07-07T12:30:00+00:00
+46                         3 2019-07-07T12:30:00+00:00
+47                         5 2019-07-07T12:30:00+00:00
+48                        20 2019-07-07T12:30:00+00:00
+49                        18 2019-07-07T12:30:00+00:00
+50                        22 2019-07-07T12:30:00+00:00
+51                         2 2019-07-07T12:30:00+00:00
+52                        20 2019-07-07T12:30:00+00:00
+53                        22 2019-07-07T12:30:00+00:00
+54                         9 2019-07-07T12:30:00+00:00
+55                         1 2019-07-07T12:30:00+00:00
+56                         3 2019-07-07T12:30:00+00:00
+57                         4 2019-07-07T12:30:00+00:00
+58                         8 2019-07-07T12:30:00+00:00
+59                        13 2019-07-07T12:30:00+00:00
+60                        21 2019-07-07T12:30:00+00:00
+61                        20 2019-07-07T12:30:00+00:00
+62                         1 2019-07-07T12:30:00+00:00
+63                        19 2019-07-07T12:30:00+00:00
+64                        16 2019-07-07T12:30:00+00:00
+65                         7 2019-07-07T12:30:00+00:00
+66                         1 2019-07-07T12:30:00+00:00
+67                         1 2019-07-07T12:30:00+00:00
+68                        20 2019-07-07T12:30:00+00:00
+69                        21 2019-07-07T12:30:00+00:00
+70                         7 2019-07-07T12:30:00+00:00
+71                        12 2019-07-07T12:30:00+00:00
+72                         1 2019-07-07T12:30:00+00:00
+73                        19 2019-07-07T12:30:00+00:00
+74                        17 2019-07-07T12:30:00+00:00
+75                        22 2019-07-07T12:30:00+00:00
+76                         7 2019-07-07T12:30:00+00:00
+77                         2 2019-07-07T12:30:00+00:00
+78                        22 2019-07-07T12:30:00+00:00
+79                        12 2019-07-07T12:30:00+00:00
+80                        12 2019-07-07T12:30:00+00:00
+81                        18 2019-07-07T12:30:00+00:00
+82                        22 2019-07-07T12:30:00+00:00
+83                        12 2019-07-07T12:30:00+00:00
+84                         5 2019-07-07T12:30:00+00:00
+85                         3 2019-07-07T12:30:00+00:00
+86                         5 2019-07-07T12:30:00+00:00
+87                         1 2019-07-07T12:30:00+00:00
+88                        16 2019-07-07T12:30:00+00:00
+89                        10 2019-07-07T12:30:00+00:00
+90                         8 2019-07-07T12:30:00+00:00
+91                         2 2019-07-07T12:30:00+00:00
+92                        10 2019-07-07T12:30:00+00:00
+93                        11 2019-07-07T12:30:00+00:00
+94                         6 2019-07-07T12:30:00+00:00
+95                        14 2019-07-07T12:30:00+00:00
+96                         1 2019-07-07T12:30:00+00:00
+97                        18 2019-07-07T12:30:00+00:00
+98                        19 2019-07-07T12:30:00+00:00
+99                        22 2019-07-07T12:30:00+00:00
+100                        6 2019-07-07T12:30:00+00:00
+101                       20 2019-07-07T12:30:00+00:00
+102                       13 2019-07-07T12:30:00+00:00
+103                       18 2019-07-07T12:30:00+00:00
+104                       21 2019-07-07T12:30:00+00:00
+105                       16 2019-07-07T12:30:00+00:00
+106                       15 2019-07-07T12:30:00+00:00
+107                       16 2019-07-07T12:30:00+00:00
+108                       19 2019-07-07T12:30:00+00:00
+109                       19 2019-07-07T12:30:00+00:00
+110                       20 2019-07-07T12:30:00+00:00
+111                       17 2019-07-07T12:30:00+00:00
+112                       12 2019-07-07T12:30:00+00:00
+113                       14 2019-07-07T12:30:00+00:00
+114                        9 2019-07-07T12:30:00+00:00
+115                       18 2019-07-07T12:30:00+00:00
+116                       15 2019-07-07T12:30:00+00:00
+117                        4 2019-07-07T12:30:00+00:00
+118                       17 2019-07-07T12:30:00+00:00
+119                       21 2019-07-07T12:30:00+00:00
+120                       21 2019-07-07T12:30:00+00:00
+121                       14 2019-07-07T12:30:00+00:00
+122                        7 2019-07-07T12:30:00+00:00
+123                        6 2019-07-07T12:30:00+00:00
+124                        8 2019-07-07T12:30:00+00:00
+125                        6 2019-07-07T12:30:00+00:00
+126                        7 2019-07-07T12:30:00+00:00
+127                       14 2019-07-07T12:30:00+00:00
+128                        7 2019-07-07T12:30:00+00:00
+129                        8 2019-07-07T12:30:00+00:00
+130                        3 2019-07-07T12:30:00+00:00
+131                        6 2019-07-07T12:30:00+00:00
+132                       12 2019-07-07T12:30:00+00:00
+133                        5 2019-07-07T12:30:00+00:00
+134                       14 2019-07-07T12:30:00+00:00
+135                       16 2019-07-07T12:30:00+00:00
+136                       11 2019-07-07T12:30:00+00:00
+137                       11 2019-07-07T12:30:00+00:00
+138                       14 2019-07-07T12:30:00+00:00
+139                       21 2019-07-07T12:30:00+00:00
+140                        7 2019-07-07T12:30:00+00:00
+141                       22 2019-07-07T12:30:00+00:00
+142                       17 2019-07-07T12:30:00+00:00
+143                       13 2019-07-07T12:30:00+00:00
+144                       17 2019-07-07T12:30:00+00:00
+145                        9 2019-07-07T12:30:00+00:00
+146                       22 2019-07-07T12:30:00+00:00
+147                        5 2019-07-07T12:30:00+00:00
+148                       13 2019-07-07T12:30:00+00:00
+149                       10 2019-07-07T12:30:00+00:00
+150                       11 2019-07-07T12:30:00+00:00
+151                       11 2019-07-07T12:30:00+00:00
+152                        4 2019-07-07T12:30:00+00:00
+153                        2 2019-07-07T12:30:00+00:00
+154                        2 2019-07-07T12:30:00+00:00
+155                        9 2019-07-07T12:30:00+00:00
+156                       20 2019-07-07T12:30:00+00:00
+157                       16 2019-07-07T12:30:00+00:00
+158                       15 2019-07-07T12:30:00+00:00
+159                        3 2019-07-07T12:30:00+00:00
+160                       10 2019-07-07T12:30:00+00:00
+161                        7 2019-07-07T12:30:00+00:00
+162                        2 2019-07-07T12:30:00+00:00
+163                        3 2019-07-07T12:30:00+00:00
+164                       17 2019-07-07T12:30:00+00:00
+165                        8 2019-07-07T12:30:00+00:00
+166                        9 2019-07-07T12:30:00+00:00
+167                        2 2019-07-07T12:30:00+00:00
+168                       12 2019-07-07T12:30:00+00:00
+169                        4 2019-07-07T12:30:00+00:00
+170                        9 2019-07-07T12:30:00+00:00
+171                       15 2019-07-07T12:30:00+00:00
+172                       18 2019-07-07T12:30:00+00:00
+173                        1 2019-07-07T12:30:00+00:00
+174                       21 2019-07-07T12:30:00+00:00
+175                        5 2019-07-07T12:30:00+00:00
+176                        4 2019-07-07T12:30:00+00:00
+                scheduled_end  type departure_city arrival_city status
+1   2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+2   2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+3   2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+4   2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+5   2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+6   2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+7   2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+8   2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+9   2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+10  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+11  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+12  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+13  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+14  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+15  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+16  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+17  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+18  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+19  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+20  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+21  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+22  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+23  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+24  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+25  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+26  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+27  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+28  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+29  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+30  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+31  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+32  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+33  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+34  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+35  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+36  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+37  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+38  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+39  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+40  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+41  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+42  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+43  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+44  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+45  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+46  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+47  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+48  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+49  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+50  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+51  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+52  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+53  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+54  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+55  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+56  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+57  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+58  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+59  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+60  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+61  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+62  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+63  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+64  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+65  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+66  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+67  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+68  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+69  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+70  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+71  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+72  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+73  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+74  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+75  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+76  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+77  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+78  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+79  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+80  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+81  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+82  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+83  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+84  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+85  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+86  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+87  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+88  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+89  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+90  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+91  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+92  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+93  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+94  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+95  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+96  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+97  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+98  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+99  2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+100 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+101 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+102 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+103 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+104 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+105 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+106 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+107 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+108 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+109 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+110 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+111 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+112 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+113 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+114 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+115 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+116 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+117 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+118 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+119 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+120 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+121 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+122 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+123 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+124 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+125 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+126 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+127 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+128 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+129 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+130 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+131 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+132 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+133 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+134 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+135 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+136 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+137 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+138 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+139 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+140 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+141 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+142 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+143 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+144 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+145 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+146 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+147 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+148 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+149 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+150 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+151 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+152 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+153 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+154 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+155 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+156 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+157 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+158 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+159 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+160 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+161 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+162 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+163 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+164 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+165 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+166 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+167 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+168 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+169 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+170 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+171 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+172 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+173 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+174 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+175 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+176 2019-07-07T15:00:00+00:00 stage       Brussels     Brussels Closed
+     classification distance distance_unit single_event
+1   Team Time Trial     27,6            km        FALSE
+2   Team Time Trial     27,6            km        FALSE
+3   Team Time Trial     27,6            km        FALSE
+4   Team Time Trial     27,6            km        FALSE
+5   Team Time Trial     27,6            km        FALSE
+6   Team Time Trial     27,6            km        FALSE
+7   Team Time Trial     27,6            km        FALSE
+8   Team Time Trial     27,6            km        FALSE
+9   Team Time Trial     27,6            km        FALSE
+10  Team Time Trial     27,6            km        FALSE
+11  Team Time Trial     27,6            km        FALSE
+12  Team Time Trial     27,6            km        FALSE
+13  Team Time Trial     27,6            km        FALSE
+14  Team Time Trial     27,6            km        FALSE
+15  Team Time Trial     27,6            km        FALSE
+16  Team Time Trial     27,6            km        FALSE
+17  Team Time Trial     27,6            km        FALSE
+18  Team Time Trial     27,6            km        FALSE
+19  Team Time Trial     27,6            km        FALSE
+20  Team Time Trial     27,6            km        FALSE
+21  Team Time Trial     27,6            km        FALSE
+22  Team Time Trial     27,6            km        FALSE
+23  Team Time Trial     27,6            km        FALSE
+24  Team Time Trial     27,6            km        FALSE
+25  Team Time Trial     27,6            km        FALSE
+26  Team Time Trial     27,6            km        FALSE
+27  Team Time Trial     27,6            km        FALSE
+28  Team Time Trial     27,6            km        FALSE
+29  Team Time Trial     27,6            km        FALSE
+30  Team Time Trial     27,6            km        FALSE
+31  Team Time Trial     27,6            km        FALSE
+32  Team Time Trial     27,6            km        FALSE
+33  Team Time Trial     27,6            km        FALSE
+34  Team Time Trial     27,6            km        FALSE
+35  Team Time Trial     27,6            km        FALSE
+36  Team Time Trial     27,6            km        FALSE
+37  Team Time Trial     27,6            km        FALSE
+38  Team Time Trial     27,6            km        FALSE
+39  Team Time Trial     27,6            km        FALSE
+40  Team Time Trial     27,6            km        FALSE
+41  Team Time Trial     27,6            km        FALSE
+42  Team Time Trial     27,6            km        FALSE
+43  Team Time Trial     27,6            km        FALSE
+44  Team Time Trial     27,6            km        FALSE
+45  Team Time Trial     27,6            km        FALSE
+46  Team Time Trial     27,6            km        FALSE
+47  Team Time Trial     27,6            km        FALSE
+48  Team Time Trial     27,6            km        FALSE
+49  Team Time Trial     27,6            km        FALSE
+50  Team Time Trial     27,6            km        FALSE
+51  Team Time Trial     27,6            km        FALSE
+52  Team Time Trial     27,6            km        FALSE
+53  Team Time Trial     27,6            km        FALSE
+54  Team Time Trial     27,6            km        FALSE
+55  Team Time Trial     27,6            km        FALSE
+56  Team Time Trial     27,6            km        FALSE
+57  Team Time Trial     27,6            km        FALSE
+58  Team Time Trial     27,6            km        FALSE
+59  Team Time Trial     27,6            km        FALSE
+60  Team Time Trial     27,6            km        FALSE
+61  Team Time Trial     27,6            km        FALSE
+62  Team Time Trial     27,6            km        FALSE
+63  Team Time Trial     27,6            km        FALSE
+64  Team Time Trial     27,6            km        FALSE
+65  Team Time Trial     27,6            km        FALSE
+66  Team Time Trial     27,6            km        FALSE
+67  Team Time Trial     27,6            km        FALSE
+68  Team Time Trial     27,6            km        FALSE
+69  Team Time Trial     27,6            km        FALSE
+70  Team Time Trial     27,6            km        FALSE
+71  Team Time Trial     27,6            km        FALSE
+72  Team Time Trial     27,6            km        FALSE
+73  Team Time Trial     27,6            km        FALSE
+74  Team Time Trial     27,6            km        FALSE
+75  Team Time Trial     27,6            km        FALSE
+76  Team Time Trial     27,6            km        FALSE
+77  Team Time Trial     27,6            km        FALSE
+78  Team Time Trial     27,6            km        FALSE
+79  Team Time Trial     27,6            km        FALSE
+80  Team Time Trial     27,6            km        FALSE
+81  Team Time Trial     27,6            km        FALSE
+82  Team Time Trial     27,6            km        FALSE
+83  Team Time Trial     27,6            km        FALSE
+84  Team Time Trial     27,6            km        FALSE
+85  Team Time Trial     27,6            km        FALSE
+86  Team Time Trial     27,6            km        FALSE
+87  Team Time Trial     27,6            km        FALSE
+88  Team Time Trial     27,6            km        FALSE
+89  Team Time Trial     27,6            km        FALSE
+90  Team Time Trial     27,6            km        FALSE
+91  Team Time Trial     27,6            km        FALSE
+92  Team Time Trial     27,6            km        FALSE
+93  Team Time Trial     27,6            km        FALSE
+94  Team Time Trial     27,6            km        FALSE
+95  Team Time Trial     27,6            km        FALSE
+96  Team Time Trial     27,6            km        FALSE
+97  Team Time Trial     27,6            km        FALSE
+98  Team Time Trial     27,6            km        FALSE
+99  Team Time Trial     27,6            km        FALSE
+100 Team Time Trial     27,6            km        FALSE
+101 Team Time Trial     27,6            km        FALSE
+102 Team Time Trial     27,6            km        FALSE
+103 Team Time Trial     27,6            km        FALSE
+104 Team Time Trial     27,6            km        FALSE
+105 Team Time Trial     27,6            km        FALSE
+106 Team Time Trial     27,6            km        FALSE
+107 Team Time Trial     27,6            km        FALSE
+108 Team Time Trial     27,6            km        FALSE
+109 Team Time Trial     27,6            km        FALSE
+110 Team Time Trial     27,6            km        FALSE
+111 Team Time Trial     27,6            km        FALSE
+112 Team Time Trial     27,6            km        FALSE
+113 Team Time Trial     27,6            km        FALSE
+114 Team Time Trial     27,6            km        FALSE
+115 Team Time Trial     27,6            km        FALSE
+116 Team Time Trial     27,6            km        FALSE
+117 Team Time Trial     27,6            km        FALSE
+118 Team Time Trial     27,6            km        FALSE
+119 Team Time Trial     27,6            km        FALSE
+120 Team Time Trial     27,6            km        FALSE
+121 Team Time Trial     27,6            km        FALSE
+122 Team Time Trial     27,6            km        FALSE
+123 Team Time Trial     27,6            km        FALSE
+124 Team Time Trial     27,6            km        FALSE
+125 Team Time Trial     27,6            km        FALSE
+126 Team Time Trial     27,6            km        FALSE
+127 Team Time Trial     27,6            km        FALSE
+128 Team Time Trial     27,6            km        FALSE
+129 Team Time Trial     27,6            km        FALSE
+130 Team Time Trial     27,6            km        FALSE
+131 Team Time Trial     27,6            km        FALSE
+132 Team Time Trial     27,6            km        FALSE
+133 Team Time Trial     27,6            km        FALSE
+134 Team Time Trial     27,6            km        FALSE
+135 Team Time Trial     27,6            km        FALSE
+136 Team Time Trial     27,6            km        FALSE
+137 Team Time Trial     27,6            km        FALSE
+138 Team Time Trial     27,6            km        FALSE
+139 Team Time Trial     27,6            km        FALSE
+140 Team Time Trial     27,6            km        FALSE
+141 Team Time Trial     27,6            km        FALSE
+142 Team Time Trial     27,6            km        FALSE
+143 Team Time Trial     27,6            km        FALSE
+144 Team Time Trial     27,6            km        FALSE
+145 Team Time Trial     27,6            km        FALSE
+146 Team Time Trial     27,6            km        FALSE
+147 Team Time Trial     27,6            km        FALSE
+148 Team Time Trial     27,6            km        FALSE
+149 Team Time Trial     27,6            km        FALSE
+150 Team Time Trial     27,6            km        FALSE
+151 Team Time Trial     27,6            km        FALSE
+152 Team Time Trial     27,6            km        FALSE
+153 Team Time Trial     27,6            km        FALSE
+154 Team Time Trial     27,6            km        FALSE
+155 Team Time Trial     27,6            km        FALSE
+156 Team Time Trial     27,6            km        FALSE
+157 Team Time Trial     27,6            km        FALSE
+158 Team Time Trial     27,6            km        FALSE
+159 Team Time Trial     27,6            km        FALSE
+160 Team Time Trial     27,6            km        FALSE
+161 Team Time Trial     27,6            km        FALSE
+162 Team Time Trial     27,6            km        FALSE
+163 Team Time Trial     27,6            km        FALSE
+164 Team Time Trial     27,6            km        FALSE
+165 Team Time Trial     27,6            km        FALSE
+166 Team Time Trial     27,6            km        FALSE
+167 Team Time Trial     27,6            km        FALSE
+168 Team Time Trial     27,6            km        FALSE
+169 Team Time Trial     27,6            km        FALSE
+170 Team Time Trial     27,6            km        FALSE
+171 Team Time Trial     27,6            km        FALSE
+172 Team Time Trial     27,6            km        FALSE
+173 Team Time Trial     27,6            km        FALSE
+174 Team Time Trial     27,6            km        FALSE
+175 Team Time Trial     27,6            km        FALSE
+176 Team Time Trial     27,6            km        FALSE
 ```
+
+time - cyclist's time or relative time on a given stage (character)
+time_rank - rank of cyclist as given in the stage (integer)
+sprint_pts - sprint points earned by cyclist on given stage (double)
+sprint_rank - rank of cyclist based on sprint points within stage (integer)
+climb_pts - climb points earned by cyclist on given stage (double)
+climb_rank - rank of cyclist based on climb points within stage (integer)
+young_rider_time - young rider time on a given stage (character)
+young_rider_rank - rank of cyclist based on young rider time within stage (integer)
