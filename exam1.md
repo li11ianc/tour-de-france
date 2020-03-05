@@ -27,29 +27,6 @@ library(stringr)
 tdf <- readRDS(file = "data/tdf_2019.rds")
 ```
 
-Use object tdf to create a tidy data frame called tdf_clean that contains the following variables. Each variable should be of the specified type given in parentheses.
-
-stage - stage of the Tour (integer)
-rider_name - full name of the cyclist, no need to change the format (character)
-rider_nat - cyclist's nationality (character)
-team_name - cyclist's team name (character)
-team_nat - cyclist's team nationality (character)
-dep_city - departure city for given stage (character)
-arr_city - arrival city for given stage (character)
-classification - stage's classification (character)
-distance - stage's distance that cyclists will ride (double)
-start_date - stage's start date, not the time (date)
-time - cyclist's time or relative time on a given stage (character)
-time_rank - rank of cyclist as given in the stage (integer)
-sprint_pts - sprint points earned by cyclist on given stage (double)
-sprint_rank - rank of cyclist based on sprint points within stage (integer)
-climb_pts - climb points earned by cyclist on given stage (double)
-climb_rank - rank of cyclist based on climb points within stage (integer)
-young_rider_time - young rider time on a given stage (character)
-young_rider_rank - rank of cyclist based on young rider time within stage (integer)
-If a variable's value is missing, code it as NA. For example, some cyclists may have values dns, dnf, or dq if they did not start, did not finish, or were disqualified, respectively. Similarly, most riders will not have climb points and a climb rank since only a few points are up for grabs in a given stage; riders missing these values should also have NA for the respective variable's value.
-
-
 ### Task 1
 
 
@@ -132,6 +109,7 @@ tdf_clean
 
 
 ```r
+# NEED TO FINISH THIS, STOPPED AT time, didnt look at anything past that
 names <- tdf_clean %>%
   filter(is.na(time), stage != 2, stage != 19) %>%
   distinct(rider_name)
@@ -186,3 +164,167 @@ tdf_clean %>%
 saveRDS(tdf_clean, "results/tdf_clean.rds")
 ```
 
+### Task 2
+
+#### Part 1
+
+Fix the time variables (time, young_rider_time) in your tidy data frame so each cyclist's stage time is given rather than just the winner's time and time back from the winner. For example, rather than "04:22.47", "+00:00.00", "+00:00.00", "+00:00.00", ... in stage 1, it should be changed to "04:22.47", "04:22.47", "04:22.47", "04:22.47", .... You may keep the result as type character or change it to a reasonable date/time data type.
+
+
+
+```r
+stage_n <- tdf_clean %>%
+#  filter(stage == 3) %>%
+  mutate(time = str_remove(time, "\\+"),
+         time = time(time))
+
+stage_n
+```
+
+```
+# A tibble: 3,696 x 21
+   stage rider_name rider_nat team_name team_nat dep_city arr_city
+   <int> <chr>      <chr>     <chr>     <chr>    <chr>    <chr>   
+ 1     1 Teunissen… Netherla… Team Jum… Netherl… Brussels Brussels
+ 2     1 Sagan, Pe… Slovakia  Bora - H… Germany  Brussels Brussels
+ 3     1 Ewan, Cal… Australia Lotto So… Belgium  Brussels Brussels
+ 4     1 Nizzolo, … Italy     Team Dim… South A… Brussels Brussels
+ 5     1 Colbrelli… Italy     Bahrain … Bahrain  Brussels Brussels
+ 6     1 Matthews,… Australia Team Sun… Netherl… Brussels Brussels
+ 7     1 Trentin, … Italy     Mitchelt… Austral… Brussels Brussels
+ 8     1 Naesen, O… Belgium   Ag2r La … France   Brussels Brussels
+ 9     1 Viviani, … Italy     Deceunin… Belgium  Brussels Brussels
+10     1 Stuyven, … Belgium   Trek–Seg… USA      Brussels Brussels
+# … with 3,686 more rows, and 14 more variables: classification <chr>,
+#   distance <dbl>, start_date <date>, time <dbl>, time_rank <int>,
+#   sprint_pts <dbl>, sprint_rank <int>, climb_pts <dbl>, climb_rank <int>,
+#   young_rider_time <chr>, young_rider_rank <int>, dns <lgl>, dnf <lgl>,
+#   dsq <lgl>
+```
+
+```r
+tdf_clean
+```
+
+```
+# A tibble: 3,696 x 21
+   stage rider_name rider_nat team_name team_nat dep_city arr_city
+   <int> <chr>      <chr>     <chr>     <chr>    <chr>    <chr>   
+ 1     1 Teunissen… Netherla… Team Jum… Netherl… Brussels Brussels
+ 2     1 Sagan, Pe… Slovakia  Bora - H… Germany  Brussels Brussels
+ 3     1 Ewan, Cal… Australia Lotto So… Belgium  Brussels Brussels
+ 4     1 Nizzolo, … Italy     Team Dim… South A… Brussels Brussels
+ 5     1 Colbrelli… Italy     Bahrain … Bahrain  Brussels Brussels
+ 6     1 Matthews,… Australia Team Sun… Netherl… Brussels Brussels
+ 7     1 Trentin, … Italy     Mitchelt… Austral… Brussels Brussels
+ 8     1 Naesen, O… Belgium   Ag2r La … France   Brussels Brussels
+ 9     1 Viviani, … Italy     Deceunin… Belgium  Brussels Brussels
+10     1 Stuyven, … Belgium   Trek–Seg… USA      Brussels Brussels
+# … with 3,686 more rows, and 14 more variables: classification <chr>,
+#   distance <dbl>, start_date <date>, time <chr>, time_rank <int>,
+#   sprint_pts <dbl>, sprint_rank <int>, climb_pts <dbl>, climb_rank <int>,
+#   young_rider_time <chr>, young_rider_rank <int>, dns <lgl>, dnf <lgl>,
+#   dsq <lgl>
+```
+
+
+
+```r
+convert_seconds <- function(time) {
+  
+  time <- str_remove(time, "\\+")
+  
+  minutes <- as.numeric(str_extract(time, "\\d{2}"))
+  
+  seconds <- str_extract(time, ":\\d{2}\\.") %>%
+    str_extract(., "\\d{2}") %>%
+    as.numeric()
+  
+  milliseconds <- str_extract(time, "\\.\\d{2}") %>%
+    str_extract(., "\\d{2}") %>%
+    as.numeric()
+  
+  time_in_seconds <- 60 * minutes + seconds + milliseconds / 100
+  
+  return (time_in_seconds)
+}
+```
+
+
+```r
+winning_times <- tdf_clean %>%
+  filter(str_detect(time, "\\+\\d{2}:\\d{2}.\\d{2}") == FALSE) %>%
+  #or duh just change this to rank = 1
+  select(stage, time, time_rank) %>%
+  mutate(time = convert_seconds((time)))
+# maybe add rows for 2 and 19? depending
+winning_times
+```
+
+```
+# A tibble: 19 x 3
+   stage  time time_rank
+   <int> <dbl>     <int>
+ 1     1  262.         1
+ 2     3  280.         1
+ 3     4  309.         1
+ 4     5  242.         1
+ 5     6  269.         1
+ 6     7  362.         1
+ 7     8  300.         1
+ 8     9  243.         1
+ 9    10  289.         1
+10    11  231.         1
+11    12  298.         1
+12    13   35          1
+13    14  190.         1
+14    15  287.         1
+15    16  237.         1
+16    17  261.         1
+17    18  334.         1
+18    20  112.         1
+19    21  184.         1
+```
+
+
+```r
+tdf_clean <- tdf_clean %>%
+  mutate(time = convert_seconds(time))
+```
+
+
+```r
+tdf_clean %>%
+  filter(stage == 4) %>%
+  mutate(time = case_when(
+    time_rank == 1 ~ time,
+    TRUE ~ winning_times[[3,2]] + time
+  ))
+```
+
+```
+# A tibble: 176 x 21
+   stage rider_name rider_nat team_name team_nat dep_city arr_city
+   <int> <chr>      <chr>     <chr>     <chr>    <chr>    <chr>   
+ 1     4 Viviani, … Italy     Deceunin… Belgium  Reims    Nancy   
+ 2     4 Kristoff,… Norway    UAE Team… United … Reims    Nancy   
+ 3     4 Ewan, Cal… Australia Lotto So… Belgium  Reims    Nancy   
+ 4     4 Sagan, Pe… Slovakia  Bora - H… Germany  Reims    Nancy   
+ 5     4 Groeneweg… Netherla… Team Jum… Netherl… Reims    Nancy   
+ 6     4 Teunissen… Netherla… Team Jum… Netherl… Reims    Nancy   
+ 7     4 Nizzolo, … Italy     Team Dim… South A… Reims    Nancy   
+ 8     4 Stuyven, … Belgium   Trek–Seg… USA      Reims    Nancy   
+ 9     4 Matthews,… Australia Team Sun… Netherl… Reims    Nancy   
+10     4 Laporte, … France    Cofidis   France   Reims    Nancy   
+# … with 166 more rows, and 14 more variables: classification <chr>,
+#   distance <dbl>, start_date <date>, time <dbl>, time_rank <int>,
+#   sprint_pts <dbl>, sprint_rank <int>, climb_pts <dbl>, climb_rank <int>,
+#   young_rider_time <chr>, young_rider_rank <int>, dns <lgl>, dnf <lgl>,
+#   dsq <lgl>
+```
+
+
+### References 
+
+Converting to decimal hours:
+https://www.r-bloggers.com/using-dates-and-times-in-r/
