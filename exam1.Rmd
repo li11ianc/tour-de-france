@@ -50,10 +50,8 @@ young_rider_time - young rider time on a given stage (character)
 young_rider_rank - rank of cyclist based on young rider time within stage (integer)
 If a variable's value is missing, code it as NA. For example, some cyclists may have values dns, dnf, or dq if they did not start, did not finish, or were disqualified, respectively. Similarly, most riders will not have climb points and a climb rank since only a few points are up for grabs in a given stage; riders missing these values should also have NA for the respective variable's value.
 
-Create a folder in your repo called results. Save tdf_clean as an object in folder results with the below code.
 
-saveRDS(tdf_clean, "results/tdf_clean.rds")
-
+### Task 1
 
 ```{r harvest-stage-info}
 compile_stage <- function(n){
@@ -79,17 +77,13 @@ messy_tdf <- lapply(1:21, compile_stage) %>%
   rbind_list()
 ```
 
-```{r}
-messy_tdf
-```
-
-```{r keep-relevant-variables}
+```{r rename-relevant-variables}
 messy_tdf <- messy_tdf %>%
   select(stage = description, rider_name = name.x, rider_nat = nationality.x, team_name = team.name, team_nat = team.nationality, dep_city = departure_city, arr_city = arrival_city, classification, distance, start_date = scheduled, time = result.time, time_rank = result.time_ranking, team_time = result.team_time, team_rank = result.team_time_ranking, sprint_pts = result.sprint, sprint_rank = result.sprint_ranking, climb_pts = result.climber, climb_rank = result.climber_ranking, young_rider_time = result.young_rider, young_rider_rank = result.young_rider_ranking, dns, dnf, dsq)
 #keeping dns dnf dsq for now
 ```
 
-```{r}
+```{r correct-variable-types}
 messy_tdf <- messy_tdf %>%
   mutate(stage = as.integer(str_extract(stage, "\\d.*")),
          distance = as.numeric(str_replace(distance, ",", ".")), 
@@ -101,7 +95,28 @@ messy_tdf <- messy_tdf %>%
          climb_rank = as.integer(climb_rank),
          young_rider_rank = as.integer(young_rider_rank)
          )
+
 tdf_clean <- messy_tdf %>%
-  select(-dns, -dnf)
+  select(-team_time, -team_rank)
+```
+
+-dns, -dnf, -dsq,
+
+```{r}
+tdf_clean
+```
+
+```{r working-w-nas}
+names <- tdf_clean %>%
+  filter(is.na(time), stage != 2, stage != 19) %>%
+  distinct(rider_name)
+names
+
+tdf_clean %>%
+  filter(rider_name == "Bevin, Patrick")
+```
+
+```{r save-to-file}
+saveRDS(tdf_clean, "results/tdf_clean.rds")
 ```
 
