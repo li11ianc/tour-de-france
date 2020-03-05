@@ -27,7 +27,7 @@ library(stringr)
 tdf <- readRDS(file = "data/tdf_2019.rds")
 ```
 
-### Task 1
+## Task 1
 
 
 ```r
@@ -81,9 +81,9 @@ tdf_clean <- messy_tdf %>%
 saveRDS(tdf_clean, "results/tdf_clean.rds")
 ```
 
-### Task 2
+## Task 2
 
-#### Part 1
+### Part 1
 
 
 ```r
@@ -290,7 +290,7 @@ tdf_clean <- tdf_clean %>%
          young_rider_time = round(seconds_to_period(young_rider_time), 2))
 ```
 
-#### Part 2
+### Part 2
 
 
 ```r
@@ -454,7 +454,13 @@ mountain_king %>%
 
  Only include the top 30 climbers sorted by total_climb_points in your final data frame. You may decide how to account for ties. Explain your choice.
 
-### References 
+
+ 
+## Task 3
+
+
+
+## References 
 
 Converting to decimal hours:
 https://www.r-bloggers.com/using-dates-and-times-in-r/
