@@ -82,12 +82,7 @@ saveRDS(tdf_clean, "results/tdf_clean.rds")
 
 ### Part 1
 
-```{r}
-tdf_clean %>%
-  filter(!is.na(young_rider_rank)) #seems to be an error, time is greater for rank 27 than 28 in stage 1
-```
-
-```{r convert-seconds-function}
+```{r convert-to-seconds}
 convert_seconds <- function(time) {
   
   time <- str_remove(time, "\\+")
@@ -112,25 +107,7 @@ tdf_clean <- tdf_clean %>%
          young_rider_time = convert_seconds(young_rider_time))
 ```
 
-
-compile_winners <- function(time_var, rank_var) {
-  
-  winning_times <- tdf_clean %>%
-  filter(deparse(substitute(rank_var)) == 1) %>%
-  select(stage, substitute(time_var))
-
-  two <- c(stage = 2, deparse(substitute(time_var)) = NA)
-  nineteen <- c(stage = 19, deparse(substitute(time_var)) = NA)
-
-  winning_times <- rbind_list(winning_times, two, nineteen) %>%
-    arrange(stage)
-  
-  return (winning_times)
-}
-
-compile_winners(tdf_clean$time, tdf_clean$time_rank)
-
-```{r}
+```{r store-winning-times}
 winning_times <- tdf_clean %>%
 filter(time_rank == 1) %>%
 select(stage, time)
@@ -152,109 +129,37 @@ yr_winning_times <- rbind_list(yr_winning_times, yr_two, yr_nineteen) %>%
   arrange(stage)
 ```
 
-```{r}
-tdf_clean <- tdf_clean %>%
-  mutate(time = case_when(
-    stage == 1 & time_rank == 1 ~ time,
-    stage == 1 & time_rank != 1 ~ winning_times[[1, 2]] + time,
-    stage == 2 & time_rank == 1 ~ time,
-    stage == 2 & time_rank != 1 ~ winning_times[[2, 2]] + time,
-    stage == 3 & time_rank == 1 ~ time,
-    stage == 3 & time_rank != 1 ~ winning_times[[3, 2]] + time,
-    stage == 4 & time_rank == 1 ~ time,
-    stage == 4 & time_rank != 1 ~ winning_times[[4, 2]] + time,
-    stage == 5 & time_rank == 1 ~ time,
-    stage == 5 & time_rank != 1 ~ winning_times[[5, 2]] + time,
-    stage == 6 & time_rank == 1 ~ time,
-    stage == 6 & time_rank != 1 ~ winning_times[[6, 2]] + time,
-    stage == 7 & time_rank == 1 ~ time,
-    stage == 7 & time_rank != 1 ~ winning_times[[7, 2]] + time,
-    stage == 8 & time_rank == 1 ~ time,
-    stage == 8 & time_rank != 1 ~ winning_times[[8, 2]] + time,
-    stage == 9 & time_rank == 1 ~ time,
-    stage == 9 & time_rank != 1 ~ winning_times[[9, 2]] + time,
-    stage == 10 & time_rank == 1 ~ time,
-    stage == 10 & time_rank != 1 ~ winning_times[[10, 2]] + time,
-    stage == 11 & time_rank == 1 ~ time,
-    stage == 11 & time_rank != 1 ~ winning_times[[11, 2]] + time,
-    stage == 12 & time_rank == 1 ~ time,
-    stage == 12 & time_rank != 1 ~ winning_times[[12, 2]] + time,
-    stage == 13 & time_rank == 1 ~ time,
-    stage == 13 & time_rank != 1 ~ winning_times[[13, 2]] + time,
-    stage == 14 & time_rank == 1 ~ time,
-    stage == 14 & time_rank != 1 ~ winning_times[[14, 2]] + time,
-    stage == 15 & time_rank == 1 ~ time,
-    stage == 15 & time_rank != 1 ~ winning_times[[15, 2]] + time,
-    stage == 16 & time_rank == 1 ~ time,
-    stage == 16 & time_rank != 1 ~ winning_times[[16, 2]] + time,
-    stage == 17 & time_rank == 1 ~ time,
-    stage == 17 & time_rank != 1 ~ winning_times[[17, 2]] + time,
-    stage == 18 & time_rank == 1 ~ time,
-    stage == 18 & time_rank != 1 ~ winning_times[[18, 2]] + time,
-    stage == 19 & time_rank == 1 ~ time,
-    stage == 19 & time_rank != 1 ~ winning_times[[19, 2]] + time,
-    stage == 20 & time_rank == 1 ~ time,
-    stage == 20 & time_rank != 1 ~ winning_times[[20, 2]] + time,
-    stage == 21 & time_rank == 1 ~ time,
-    stage == 21 & time_rank != 1 ~ winning_times[[21, 2]] + time,
-    TRUE ~ time
-  ))
+```{r make-time-absolute}
+make_time_absolute <- function(n){
+  updated_stage_df <- tdf_clean %>%
+    filter(stage == n) %>%
+    mutate(time = case_when(
+      time_rank == 1 ~ time,
+      time_rank != 1 ~ winning_times[[n, 2]] + time,
+      TRUE ~ time
+    ))
+  return (updated_stage_df)
+}
 
-tdf_clean <- tdf_clean %>%
-  mutate(young_rider_time = case_when(
-    stage == 1 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 1 & young_rider_rank != 1 ~ yr_winning_times[[1, 2]] + young_rider_time,
-    stage == 2 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 2 & young_rider_rank != 1 ~ yr_winning_times[[2, 2]] + young_rider_time,
-    stage == 3 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 3 & young_rider_rank != 1 ~ yr_winning_times[[3, 2]] + young_rider_time,
-    stage == 4 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 4 & young_rider_rank != 1 ~ yr_winning_times[[4, 2]] + young_rider_time,
-    stage == 5 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 5 & young_rider_rank != 1 ~ yr_winning_times[[5, 2]] + young_rider_time,
-    stage == 6 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 6 & young_rider_rank != 1 ~ yr_winning_times[[6, 2]] + young_rider_time,
-    stage == 7 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 7 & young_rider_rank != 1 ~ yr_winning_times[[7, 2]] + young_rider_time,
-    stage == 8 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 8 & young_rider_rank != 1 ~ yr_winning_times[[8, 2]] + young_rider_time,
-    stage == 9 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 9 & young_rider_rank != 1 ~ yr_winning_times[[9, 2]] + young_rider_time,
-    stage == 10 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 10 & young_rider_rank != 1 ~ yr_winning_times[[10, 2]] + young_rider_time,
-    stage == 11 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 11 & young_rider_rank != 1 ~ yr_winning_times[[11, 2]] + young_rider_time,
-    stage == 12 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 12 & young_rider_rank != 1 ~ yr_winning_times[[12, 2]] + young_rider_time,
-    stage == 13 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 13 & young_rider_rank != 1 ~ yr_winning_times[[13, 2]] + young_rider_time,
-    stage == 14 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 14 & young_rider_rank != 1 ~ yr_winning_times[[14, 2]] + young_rider_time,
-    stage == 15 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 15 & young_rider_rank != 1 ~ yr_winning_times[[15, 2]] + young_rider_time,
-    stage == 16 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 16 & young_rider_rank != 1 ~ yr_winning_times[[16, 2]] + young_rider_time,
-    stage == 17 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 17 & young_rider_rank != 1 ~ yr_winning_times[[17, 2]] + young_rider_time,
-    stage == 18 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 18 & young_rider_rank != 1 ~ yr_winning_times[[18, 2]] + young_rider_time,
-    stage == 19 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 19 & young_rider_rank != 1 ~ yr_winning_times[[19, 2]] + young_rider_time,
-    stage == 20 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 20 & young_rider_rank != 1 ~ yr_winning_times[[20, 2]] + young_rider_time,
-    stage == 21 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 21 & young_rider_rank != 1 ~ yr_winning_times[[21, 2]] + young_rider_time,
-    TRUE ~ young_rider_time
-  ))
+tdf_clean <- lapply(1:21, make_time_absolute) %>%
+  rbind_list()
 ```
 
-
-minutes_and_seconds <- function(time) {
-  min <- time %/% 60
-  sec <- time %% 60
-  return (str_c(min, ":", sec))
-  as.POSIXlt(., tz = "", format = "%M:%S\\.%S")
+```{r make-young-rider-time-absolute}
+make_yr_time_absolute <- function(n){
+  updated_stage_df <- tdf_clean %>%
+    filter(stage == n) %>%
+    mutate(young_rider_time = case_when(
+      young_rider_rank == 1 ~ young_rider_time,
+      young_rider_rank != 1 ~ yr_winning_times[[n, 2]] + young_rider_time,
+      TRUE ~ young_rider_time
+    ))
+  return (updated_stage_df)
 }
+
+tdf_clean <- lapply(1:21, make_yr_time_absolute) %>%
+  rbind_list()
+```
 
 ```{r return-seconds-to-time}
 tdf_clean <- tdf_clean %>%
@@ -264,7 +169,7 @@ tdf_clean <- tdf_clean %>%
 
 ### Part 2
 
-```{r}
+```{r climb-pts-data}
 mountains <- tdf_clean %>%
   select(stage, rider_name, climb_pts) %>%
   mutate(climb_pts = case_when(
@@ -276,30 +181,33 @@ mountains <- tdf_clean %>%
 mountains <- pivot_wider(mountains, id_cols = rider_name, names_from = stage, values_from = climb_pts)
 ```
 
-```{r}
+```{r keep-top-30-climbers}
 mountains <- mountains %>%
   mutate(total_climb_pts = select(., stage_1:stage_21) %>% 
            rowSums()) %>%
   arrange(desc(total_climb_pts)) %>%
   head(30)
-
-rank <- c(1:30)
-
-mountain_king <- cbind(mountains, rank)
-mountain_king <- mountain_king[,c(1, 24, 2:23)]
 ```
 
-```{r}
-mountain_king %>%
+```{r add-climb-rank}
+mountain_king <- mountains %>%
+  mutate(rank = rank(-total_climb_pts, ties.method = "min"))
+```
+
+```{r fix-types}
+mountain_king <- mountain_king[,c(1, 24, 2:23)]
+
+mountain_king <- mountain_king %>%
   mutate(rank = as.numeric(rank))
 ```
 
- Only include the top 30 climbers sorted by total_climb_points in your final data frame. You may decide how to account for ties. Explain your choice.
-
-```{r}
-
+```{r display-climb-answer}
+glimpse(mountain_king)
+mountain_king
 ```
- 
+
+I decided to account for ties using the "minimum" method of function `rank()`, a technique commonly used in sports. As an example of how this works, if two competitors tie for 5th place, they will both receive rank 5, and the next competitor will receive rank 7, skipping over 6th place. This way, the ranks of competitors following ties are not unduly inflated, and competitors within tied groups are not arbitrarily or randomly assigned rankings.
+
 ## Task 3
 
 
@@ -315,3 +223,5 @@ https://stackoverflow.com/questions/14577412/how-to-convert-variable-object-name
 row sums
 https://stackoverflow.com/questions/29006056/efficiently-sum-across-multiple-columns-in-r
 
+https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/rank
+rank function

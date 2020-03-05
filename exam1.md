@@ -87,32 +87,6 @@ saveRDS(tdf_clean, "results/tdf_clean.rds")
 
 
 ```r
-tdf_clean %>%
-  filter(!is.na(young_rider_rank)) #seems to be an error, time is greater for rank 27 than 28 in stage 1
-```
-
-```
-# A tibble: 501 x 18
-   stage rider_name rider_nat team_name team_nat dep_city arr_city
-   <int> <chr>      <chr>     <chr>     <chr>    <chr>    <chr>   
- 1     1 Ewan, Cal… Australia Lotto So… Belgium  Brussels Brussels
- 2     1 Jansen Gr… Norway    Team Jum… Netherl… Brussels Brussels
- 3     1 Van Aert,… Belgium   Team Jum… Netherl… Brussels Brussels
- 4     1 Asgreen, … Denmark   Deceunin… Belgium  Brussels Brussels
- 5     1 Bol, Cees  Netherla… Team Sun… Netherl… Brussels Brussels
- 6     1 Garcia Co… Spain     Bahrain … Bahrain  Brussels Brussels
- 7     1 Philipsen… Belgium   UAE Team… United … Brussels Brussels
- 8     1 Mas Nicol… Spain     Deceunin… Belgium  Brussels Brussels
- 9     1 Benoot, T… Belgium   Lotto So… Belgium  Brussels Brussels
-10     1 Politt, N… Germany   Team Kat… Switzer… Brussels Brussels
-# … with 491 more rows, and 11 more variables: classification <chr>,
-#   distance <dbl>, start_date <date>, time <chr>, time_rank <int>,
-#   sprint_pts <dbl>, sprint_rank <int>, climb_pts <dbl>, climb_rank <int>,
-#   young_rider_time <chr>, young_rider_rank <int>
-```
-
-
-```r
 convert_seconds <- function(time) {
   
   time <- str_remove(time, "\\+")
@@ -136,24 +110,6 @@ tdf_clean <- tdf_clean %>%
   mutate(time = convert_seconds(time),
          young_rider_time = convert_seconds(young_rider_time))
 ```
-
-
-compile_winners <- function(time_var, rank_var) {
-  
-  winning_times <- tdf_clean %>%
-  filter(deparse(substitute(rank_var)) == 1) %>%
-  select(stage, substitute(time_var))
-
-  two <- c(stage = 2, deparse(substitute(time_var)) = NA)
-  nineteen <- c(stage = 19, deparse(substitute(time_var)) = NA)
-
-  winning_times <- rbind_list(winning_times, two, nineteen) %>%
-    arrange(stage)
-  
-  return (winning_times)
-}
-
-compile_winners(tdf_clean$time, tdf_clean$time_rank)
 
 
 ```r
@@ -180,108 +136,37 @@ yr_winning_times <- rbind_list(yr_winning_times, yr_two, yr_nineteen) %>%
 
 
 ```r
-tdf_clean <- tdf_clean %>%
-  mutate(time = case_when(
-    stage == 1 & time_rank == 1 ~ time,
-    stage == 1 & time_rank != 1 ~ winning_times[[1, 2]] + time,
-    stage == 2 & time_rank == 1 ~ time,
-    stage == 2 & time_rank != 1 ~ winning_times[[2, 2]] + time,
-    stage == 3 & time_rank == 1 ~ time,
-    stage == 3 & time_rank != 1 ~ winning_times[[3, 2]] + time,
-    stage == 4 & time_rank == 1 ~ time,
-    stage == 4 & time_rank != 1 ~ winning_times[[4, 2]] + time,
-    stage == 5 & time_rank == 1 ~ time,
-    stage == 5 & time_rank != 1 ~ winning_times[[5, 2]] + time,
-    stage == 6 & time_rank == 1 ~ time,
-    stage == 6 & time_rank != 1 ~ winning_times[[6, 2]] + time,
-    stage == 7 & time_rank == 1 ~ time,
-    stage == 7 & time_rank != 1 ~ winning_times[[7, 2]] + time,
-    stage == 8 & time_rank == 1 ~ time,
-    stage == 8 & time_rank != 1 ~ winning_times[[8, 2]] + time,
-    stage == 9 & time_rank == 1 ~ time,
-    stage == 9 & time_rank != 1 ~ winning_times[[9, 2]] + time,
-    stage == 10 & time_rank == 1 ~ time,
-    stage == 10 & time_rank != 1 ~ winning_times[[10, 2]] + time,
-    stage == 11 & time_rank == 1 ~ time,
-    stage == 11 & time_rank != 1 ~ winning_times[[11, 2]] + time,
-    stage == 12 & time_rank == 1 ~ time,
-    stage == 12 & time_rank != 1 ~ winning_times[[12, 2]] + time,
-    stage == 13 & time_rank == 1 ~ time,
-    stage == 13 & time_rank != 1 ~ winning_times[[13, 2]] + time,
-    stage == 14 & time_rank == 1 ~ time,
-    stage == 14 & time_rank != 1 ~ winning_times[[14, 2]] + time,
-    stage == 15 & time_rank == 1 ~ time,
-    stage == 15 & time_rank != 1 ~ winning_times[[15, 2]] + time,
-    stage == 16 & time_rank == 1 ~ time,
-    stage == 16 & time_rank != 1 ~ winning_times[[16, 2]] + time,
-    stage == 17 & time_rank == 1 ~ time,
-    stage == 17 & time_rank != 1 ~ winning_times[[17, 2]] + time,
-    stage == 18 & time_rank == 1 ~ time,
-    stage == 18 & time_rank != 1 ~ winning_times[[18, 2]] + time,
-    stage == 19 & time_rank == 1 ~ time,
-    stage == 19 & time_rank != 1 ~ winning_times[[19, 2]] + time,
-    stage == 20 & time_rank == 1 ~ time,
-    stage == 20 & time_rank != 1 ~ winning_times[[20, 2]] + time,
-    stage == 21 & time_rank == 1 ~ time,
-    stage == 21 & time_rank != 1 ~ winning_times[[21, 2]] + time,
-    TRUE ~ time
-  ))
+make_time_absolute <- function(n){
+  updated_stage_df <- tdf_clean %>%
+    filter(stage == n) %>%
+    mutate(time = case_when(
+      time_rank == 1 ~ time,
+      time_rank != 1 ~ winning_times[[n, 2]] + time,
+      TRUE ~ time
+    ))
+  return (updated_stage_df)
+}
 
-tdf_clean <- tdf_clean %>%
-  mutate(young_rider_time = case_when(
-    stage == 1 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 1 & young_rider_rank != 1 ~ yr_winning_times[[1, 2]] + young_rider_time,
-    stage == 2 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 2 & young_rider_rank != 1 ~ yr_winning_times[[2, 2]] + young_rider_time,
-    stage == 3 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 3 & young_rider_rank != 1 ~ yr_winning_times[[3, 2]] + young_rider_time,
-    stage == 4 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 4 & young_rider_rank != 1 ~ yr_winning_times[[4, 2]] + young_rider_time,
-    stage == 5 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 5 & young_rider_rank != 1 ~ yr_winning_times[[5, 2]] + young_rider_time,
-    stage == 6 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 6 & young_rider_rank != 1 ~ yr_winning_times[[6, 2]] + young_rider_time,
-    stage == 7 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 7 & young_rider_rank != 1 ~ yr_winning_times[[7, 2]] + young_rider_time,
-    stage == 8 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 8 & young_rider_rank != 1 ~ yr_winning_times[[8, 2]] + young_rider_time,
-    stage == 9 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 9 & young_rider_rank != 1 ~ yr_winning_times[[9, 2]] + young_rider_time,
-    stage == 10 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 10 & young_rider_rank != 1 ~ yr_winning_times[[10, 2]] + young_rider_time,
-    stage == 11 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 11 & young_rider_rank != 1 ~ yr_winning_times[[11, 2]] + young_rider_time,
-    stage == 12 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 12 & young_rider_rank != 1 ~ yr_winning_times[[12, 2]] + young_rider_time,
-    stage == 13 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 13 & young_rider_rank != 1 ~ yr_winning_times[[13, 2]] + young_rider_time,
-    stage == 14 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 14 & young_rider_rank != 1 ~ yr_winning_times[[14, 2]] + young_rider_time,
-    stage == 15 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 15 & young_rider_rank != 1 ~ yr_winning_times[[15, 2]] + young_rider_time,
-    stage == 16 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 16 & young_rider_rank != 1 ~ yr_winning_times[[16, 2]] + young_rider_time,
-    stage == 17 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 17 & young_rider_rank != 1 ~ yr_winning_times[[17, 2]] + young_rider_time,
-    stage == 18 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 18 & young_rider_rank != 1 ~ yr_winning_times[[18, 2]] + young_rider_time,
-    stage == 19 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 19 & young_rider_rank != 1 ~ yr_winning_times[[19, 2]] + young_rider_time,
-    stage == 20 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 20 & young_rider_rank != 1 ~ yr_winning_times[[20, 2]] + young_rider_time,
-    stage == 21 & young_rider_rank == 1 ~ young_rider_time,
-    stage == 21 & young_rider_rank != 1 ~ yr_winning_times[[21, 2]] + young_rider_time,
-    TRUE ~ young_rider_time
-  ))
+tdf_clean <- lapply(1:21, make_time_absolute) %>%
+  rbind_list()
 ```
 
 
-minutes_and_seconds <- function(time) {
-  min <- time %/% 60
-  sec <- time %% 60
-  return (str_c(min, ":", sec))
-  as.POSIXlt(., tz = "", format = "%M:%S\\.%S")
+```r
+make_yr_time_absolute <- function(n){
+  updated_stage_df <- tdf_clean %>%
+    filter(stage == n) %>%
+    mutate(young_rider_time = case_when(
+      young_rider_rank == 1 ~ young_rider_time,
+      young_rider_rank != 1 ~ yr_winning_times[[n, 2]] + young_rider_time,
+      TRUE ~ young_rider_time
+    ))
+  return (updated_stage_df)
 }
+
+tdf_clean <- lapply(1:21, make_yr_time_absolute) %>%
+  rbind_list()
+```
 
 
 ```r
@@ -312,150 +197,83 @@ mountains <- mountains %>%
            rowSums()) %>%
   arrange(desc(total_climb_pts)) %>%
   head(30)
-
-rank <- c(1:30)
-
-mountain_king <- cbind(mountains, rank)
-mountain_king <- mountain_king[,c(1, 24, 2:23)]
 ```
 
 
 ```r
-mountain_king %>%
+mountain_king <- mountains %>%
+  mutate(rank = rank(-total_climb_pts, ties.method = "min"))
+```
+
+
+```r
+mountain_king <- mountain_king[,c(1, 24, 2:23)]
+
+mountain_king <- mountain_king %>%
   mutate(rank = as.numeric(rank))
 ```
 
-```
-            rider_name rank stage_1 stage_2 stage_3 stage_4 stage_5 stage_6
-1       Bardet, Romain    1       0       0       0       0       0       0
-2         Bernal, Egan    2       0       0       0       0       0       0
-3         Wellens, Tim    3       0       0       7       0      10      26
-4      Caruso, Damiano    4       0       0       0       0       0       0
-5     Nibali, Vincenzo    5       0       0       0       0       0       0
-6         Yates, Simon    6       0       0       0       0       0       0
-7      Quintana, Nairo    7       0       0       1       0       0       0
-8       Pinot, Thibaut    8       0       0       0       0       0       2
-9     Lutsenko, Alexey    9       0       0       0       0       0       0
-10  Kruijswijk, Steven   10       0       0       0       0       0       0
-11  Landa Meana, Mikel   11       0       0       0       0       0       0
-12   Buchmann, Emanuel   12       0       0       0       0       0       0
-13    De Gendt, Thomas   13       0       0       0       0       0       8
-14     Thomas, Geraint   14       0       0       0       0       0       4
-15 Alaphilippe, Julian   15       0       0       1       0       0       1
-16      Woods, Michael   16       0       0       0       0       0       0
-17     Ciccone, Giulio   17       0       0       0       0       0      30
-18 Valverde, Alejandro   18       0       0       0       0       0       0
-19       Benoot, Tiesj   19       0       0       0       0       0       0
-20    Meurisse, Xandro   20       2       0       1       0       3      21
-21     Bernard, Julien   21       0       0       0       0       0       2
-22     Barguil, Warren   22       0       0       0       0       0       0
-23      Kamna, Lennard   23       0       0       0       0       1       0
-24         Yates, Adam   24       0       0       0       0       0       0
-25     Uran, Rigoberto   25       0       0       0       0       0       0
-26    de Plus, Laurens   26       0       0       0       0       0       0
-27    Berhane, Natnael   27       0       0       0       0       0      13
-28      Geschke, Simon   28       0       0       0       0       0       0
-29      Pauwels, Serge   29       0       0       0       0       0       1
-30        Teuns, Dylan   30       0       0       0       0       0      13
-   stage_7 stage_8 stage_9 stage_10 stage_11 stage_12 stage_13 stage_14
-1        0       0       0        0        0        0        0        0
-2        0       0       0        0        0        0        0       16
-3        0       0       0        0        0       11        0       10
-4        0       0       0        0        0        0        0        0
-5        0       0       0        0        0        0        0        9
-6        0       0       0        0        0       10        0        0
-7        0       0       0        0        0        0        0        0
-8        0       0       0        0        0        0        0       40
-9        0       0       0        0        0        0        0        0
-10       0       0       0        0        0        0        0       24
-11       0       0       0        0        0        0        0       12
-12       0       0       0        0        0        0        0       20
-13       0      29       0        0        0        0        0        0
-14       0       0       0        0        0        0        0        4
-15       0       1       0        0        0        0        0       30
-16       0       0       0        0        0        0        0        0
-17       0       0       0        0        0        0        0        0
-18       0       0       0        0        0        0        0        0
-19       0       0      12        0        0        4        0        0
-20       0       0       0        0        0        0        0        0
-21       0       0       0        0        0        0        0        0
-22       0       0       0        0        0        0        0        0
-23       0       0       0        0        0        0        0        0
-24       0       0       0        0        0        0        0        0
-25       0       0       0        0        0        0        0        8
-26       0       0       0        0        0        0        0        0
-27       0       0       0        7        0        0        0        0
-28       0       0       0        0        0        0        0        0
-29       0       0       0        0        0       12        0        0
-30       0       0       0        0        0        0        0        0
-   stage_15 stage_16 stage_17 stage_18 stage_19 stage_20 stage_21
-1        18        0        0       68        0        0        0
-2         2        0        0        0       40       20        0
-3         0        0        0       10        0        0        1
-4         0        0        0       60        7        0        0
-5         3        0        0        0        7       40        0
-6        19        0        0        0       30        0        0
-7         1        0        0       56        0        0        0
-8         8        0        0        0        0        0        0
-9         5        0        0       40        0        0        0
-10        0        0        0        0       16        4        0
-11        6        0        0        0        0       24        0
-12        4        0        0        0        8        8        0
-13        0        0        1        0        0        0        0
-14        0        0        0        0       12       16        0
-15        0        0        0        0        0        0        0
-16        7        0        0       24        0        0        0
-17        0        0        0        0        0        0        0
-18        0        0        0        0        0       30        0
-19        0        0        0       12        0        0        0
-20        0        0        0        0        0        0        0
-21        0        0        0       24        0        0        0
-22        0        0        0        0       24        0        0
-23        1        0        0       20        0        0        0
-24        0        0        0       20        0        0        0
-25        0        0        0        0        0       12        0
-26        0        0        0        0       20        0        0
-27        0        0        0        0        0        0        0
-28       18        0        0        0        0        0        0
-29        0        0        0        4        0        0        0
-30        0        0        0        0        0        0        0
-   total_climb_pts
-1               86
-2               78
-3               75
-4               67
-5               59
-6               59
-7               58
-8               50
-9               45
-10              44
-11              42
-12              40
-13              38
-14              36
-15              33
-16              31
-17              30
-18              30
-19              28
-20              27
-21              26
-22              24
-23              22
-24              20
-25              20
-26              20
-27              20
-28              18
-29              17
-30              13
+
+```r
+glimpse(mountain_king)
 ```
 
- Only include the top 30 climbers sorted by total_climb_points in your final data frame. You may decide how to account for ties. Explain your choice.
+```
+Observations: 30
+Variables: 24
+$ rider_name      <chr> "Bardet, Romain", "Bernal, Egan", "Wellens, Tim", "Ca…
+$ rank            <dbl> 1, 2, 3, 4, 5, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16…
+$ stage_1         <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ stage_2         <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ stage_3         <dbl> 0, 0, 7, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,…
+$ stage_4         <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ stage_5         <dbl> 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ stage_6         <dbl> 0, 0, 26, 0, 0, 0, 0, 2, 0, 0, 0, 0, 8, 4, 1, 0, 30, …
+$ stage_7         <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ stage_8         <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 0, 1, 0, 0, 0…
+$ stage_9         <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ stage_10        <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ stage_11        <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ stage_12        <dbl> 0, 0, 11, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ stage_13        <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ stage_14        <dbl> 0, 16, 10, 0, 9, 0, 0, 40, 0, 24, 12, 20, 0, 4, 30, 0…
+$ stage_15        <dbl> 18, 2, 0, 0, 3, 19, 1, 8, 5, 0, 6, 4, 0, 0, 0, 7, 0, …
+$ stage_16        <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ stage_17        <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,…
+$ stage_18        <dbl> 68, 0, 10, 60, 0, 0, 56, 0, 40, 0, 0, 0, 0, 0, 0, 24,…
+$ stage_19        <dbl> 0, 40, 0, 7, 7, 30, 0, 0, 0, 16, 0, 8, 0, 12, 0, 0, 0…
+$ stage_20        <dbl> 0, 20, 0, 0, 40, 0, 0, 0, 0, 4, 24, 8, 0, 16, 0, 0, 0…
+$ stage_21        <dbl> 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ total_climb_pts <dbl> 86, 78, 75, 67, 59, 59, 58, 50, 45, 44, 42, 40, 38, 3…
+```
 
+```r
+mountain_king
+```
 
- 
+```
+# A tibble: 30 x 24
+   rider_name  rank stage_1 stage_2 stage_3 stage_4 stage_5 stage_6 stage_7
+   <chr>      <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
+ 1 Bardet, R…     1       0       0       0       0       0       0       0
+ 2 Bernal, E…     2       0       0       0       0       0       0       0
+ 3 Wellens, …     3       0       0       7       0      10      26       0
+ 4 Caruso, D…     4       0       0       0       0       0       0       0
+ 5 Nibali, V…     5       0       0       0       0       0       0       0
+ 6 Yates, Si…     5       0       0       0       0       0       0       0
+ 7 Quintana,…     7       0       0       1       0       0       0       0
+ 8 Pinot, Th…     8       0       0       0       0       0       2       0
+ 9 Lutsenko,…     9       0       0       0       0       0       0       0
+10 Kruijswij…    10       0       0       0       0       0       0       0
+# … with 20 more rows, and 15 more variables: stage_8 <dbl>, stage_9 <dbl>,
+#   stage_10 <dbl>, stage_11 <dbl>, stage_12 <dbl>, stage_13 <dbl>,
+#   stage_14 <dbl>, stage_15 <dbl>, stage_16 <dbl>, stage_17 <dbl>,
+#   stage_18 <dbl>, stage_19 <dbl>, stage_20 <dbl>, stage_21 <dbl>,
+#   total_climb_pts <dbl>
+```
+
+I decided to account for ties using the "minimum" method of function `rank()`, a technique commonly used in sports. As an example of how this works, if two competitors tie for 5th place, they will both receive rank 5, and the next competitor will receive rank 7, skipping over 6th place. This way, the ranks of competitors following ties are not unduly inflated, and competitors within tied groups are not arbitrarily or randomly assigned rankings.
+
 ## Task 3
 
 
@@ -471,3 +289,5 @@ https://stackoverflow.com/questions/14577412/how-to-convert-variable-object-name
 row sums
 https://stackoverflow.com/questions/29006056/efficiently-sum-across-multiple-columns-in-r
 
+https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/rank
+rank function
