@@ -35,30 +35,38 @@ tdf <- readRDS(file = "data/tdf_2019.rds")
 
 ```r
 compile_stage <- function(n){
+  # Store relevant details for each of the 21 stages
   stage_info <- data.frame(tdf[[n]]$stage) %>%
     select(description:single_event)
   
+  # Store information on each competitor
   people <- lapply(tdf[[n]]$stage$competitors, data.frame) %>%
     bind_rows() %>%
+    # Add a column which will identify observations by stage number
     mutate(description = (str_c("Stage ", n)))
   
+  # Store information on each team
   team_info <- lapply(tdf[[n]]$stage$teams, data.frame) %>%
     bind_rows() %>%
     rename(team.id = id)
   
+  # Add team info for each competitor by joining competitor and team observations by team id
   people_teams <- full_join(people, team_info, by = "team.id")
   
+  # Add stage info for each competitor by joining competitor and stage observations by stage number
   whole_stage <- full_join(people_teams, stage_info, by = "description") 
 
   return (whole_stage)
 }
 
+# Apply compile_stage function to every stage and compile into a dataframe
 messy_tdf <- lapply(1:21, compile_stage) %>%
   rbind_list()
 ```
 
 
 ```r
+# Rename and keep only relevant variables
 messy_tdf <- messy_tdf %>%
   select(stage = description, rider_name = name.x, rider_nat = nationality.x, team_name = team.name, team_nat = team.nationality, dep_city = departure_city, arr_city = arrival_city, classification, distance, start_date = scheduled, time = result.time, time_rank = result.time_ranking, sprint_pts = result.sprint, sprint_rank = result.sprint_ranking, climb_pts = result.climber, climb_rank = result.climber_ranking, young_rider_time = result.young_rider, young_rider_rank = result.young_rider_ranking)
 ```
@@ -68,6 +76,7 @@ messy_tdf <- messy_tdf %>%
 tdf_clean <- messy_tdf %>%
   mutate(stage = as.integer(str_extract(stage, "\\d.*")),
          distance = as.numeric(str_replace(distance, ",", ".")), 
+         # Remove extra time information from start date value
          start_date = date(str_extract(start_date, "\\d{4}-\\d{2}-\\d{2}")),
          time_rank = as.integer(time_rank), 
          # One cyclist was mistakenly recorded with negative points
@@ -80,61 +89,60 @@ tdf_clean <- messy_tdf %>%
 ```
 
 
+```r
+glimpse(tdf_clean)
+```
+
+```
+Observations: 3,696
+Variables: 18
+$ stage            <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ rider_name       <chr> "Teunissen, Mike", "Sagan, Peter", "Ewan, Caleb", "N…
+$ rider_nat        <chr> "Netherlands", "Slovakia", "Australia", "Italy", "It…
+$ team_name        <chr> "Team Jumbo - Visma", "Bora - Hansgrohe", "Lotto Sou…
+$ team_nat         <chr> "Netherlands", "Germany", "Belgium", "South Africa",…
+$ dep_city         <chr> "Brussels", "Brussels", "Brussels", "Brussels", "Bru…
+$ arr_city         <chr> "Brussels", "Brussels", "Brussels", "Brussels", "Bru…
+$ classification   <chr> "Flat", "Flat", "Flat", "Flat", "Flat", "Flat", "Fla…
+$ distance         <dbl> 194.5, 194.5, 194.5, 194.5, 194.5, 194.5, 194.5, 194…
+$ start_date       <date> 2019-07-06, 2019-07-06, 2019-07-06, 2019-07-06, 201…
+$ time             <chr> "04:22.47", "+00:00.00", "+00:00.00", "+00:00.00", "…
+$ time_rank        <int> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 1…
+$ sprint_pts       <dbl> 50, 50, 20, 18, 33, 27, 23, 10, 8, 7, 21, 5, 4, 3, 2…
+$ sprint_rank      <int> 1, 2, 7, 8, 3, 4, 5, 9, 12, 14, 6, 17, 19, 21, 23, 2…
+$ climb_pts        <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 2, NA, NA, N…
+$ climb_rank       <int> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 2, NA, NA, N…
+$ young_rider_time <chr> NA, NA, "04:22.47", NA, NA, NA, NA, NA, NA, NA, NA, …
+$ young_rider_rank <int> NA, NA, 1, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+```
+
 
 ```r
 saveRDS(tdf_clean, "results/tdf_clean.rds")
 ```
 
-
-```r
-tdf_clean %>%
-  filter(rider_name == "Sagan, Peter")
-```
-
-```
-# A tibble: 21 x 18
-   stage rider_name rider_nat team_name team_nat dep_city arr_city
-   <int> <chr>      <chr>     <chr>     <chr>    <chr>    <chr>   
- 1     1 Sagan, Pe… Slovakia  Bora - H… Germany  Brussels Brussels
- 2     2 Sagan, Pe… Slovakia  Bora - H… Germany  Brussels Brussels
- 3     3 Sagan, Pe… Slovakia  Bora - H… Germany  Binche   Epernay 
- 4     4 Sagan, Pe… Slovakia  Bora - H… Germany  Reims    Nancy   
- 5     5 Sagan, Pe… Slovakia  Bora - H… Germany  Saint-D… Colmar  
- 6     6 Sagan, Pe… Slovakia  Bora - H… Germany  Mulhouse Planche…
- 7     7 Sagan, Pe… Slovakia  Bora - H… Germany  Belfort  Chalon-…
- 8     8 Sagan, Pe… Slovakia  Bora - H… Germany  Macon    Saint E…
- 9     9 Sagan, Pe… Slovakia  Bora - H… Germany  Saint E… Brioude 
-10    10 Sagan, Pe… Slovakia  Bora - H… Germany  Saint-F… Albi    
-# … with 11 more rows, and 11 more variables: classification <chr>,
-#   distance <dbl>, start_date <date>, time <chr>, time_rank <int>,
-#   sprint_pts <dbl>, sprint_rank <int>, climb_pts <dbl>, climb_rank <int>,
-#   young_rider_time <chr>, young_rider_rank <int>
-```
 ## Task 2
 
 ### Part 1
 
 
 ```r
+# Function to convert character string to a double representing the amount of time in seconds only
 convert_seconds <- function(time) {
-  
   time <- str_remove(time, "\\+")
-  
   minutes <- as.numeric(str_extract(time, "\\d{2}"))
-  
   seconds <- str_extract(time, ":\\d{2}\\.") %>%
     str_extract(., "\\d{2}") %>%
     as.numeric()
-  
   milliseconds <- str_extract(time, "\\.\\d{2}") %>%
     str_extract(., "\\d{2}") %>%
     as.numeric()
-  
   time_in_seconds <- 60 * minutes + seconds + milliseconds / 100
   
   return (time_in_seconds)
 }
 
+# Apply function to convert all time values in tdf_clean to seconds
 tdf_clean <- tdf_clean %>%
   mutate(time = convert_seconds(time),
          young_rider_time = convert_seconds(young_rider_time))
@@ -142,16 +150,19 @@ tdf_clean <- tdf_clean %>%
 
 
 ```r
+# Create dataset of winning times for each stage
 winning_times <- tdf_clean %>%
 filter(time_rank == 1) %>%
 select(stage, time)
 
+# Add NA as winning time for stages 2 and 19, team trials where no rider was ranked first
 two <- c(stage = 2, time = NA)
 nineteen <- c(stage = 19, time = NA)
 
 winning_times <- rbind_list(winning_times, two, nineteen) %>%
   arrange(stage)
 
+# Repeat for young rider times
 yr_winning_times <- tdf_clean %>%
 filter(young_rider_rank == 1) %>%
 select(stage, young_rider_time)
@@ -165,6 +176,7 @@ yr_winning_times <- rbind_list(yr_winning_times, yr_two, yr_nineteen) %>%
 
 
 ```r
+# Function to take data for a stage and add winning time to all other times, converting from relative to absolute
 make_time_absolute <- function(n){
   updated_stage_df <- tdf_clean %>%
     filter(stage == n) %>%
@@ -176,12 +188,14 @@ make_time_absolute <- function(n){
   return (updated_stage_df)
 }
 
+# Apply time fixing function to every stage
 tdf_clean <- lapply(1:21, make_time_absolute) %>%
   rbind_list()
 ```
 
 
 ```r
+# Function to take data for a stage and add winning young rider time to all other times, converting from relative to absolute
 make_yr_time_absolute <- function(n){
   updated_stage_df <- tdf_clean %>%
     filter(stage == n) %>%
@@ -193,6 +207,7 @@ make_yr_time_absolute <- function(n){
   return (updated_stage_df)
 }
 
+# Apply young rider time fixing function to every stage
 tdf_clean <- lapply(1:21, make_yr_time_absolute) %>%
   rbind_list()
 ```
@@ -200,14 +215,30 @@ tdf_clean <- lapply(1:21, make_yr_time_absolute) %>%
 
 ```r
 tdf_clean <- tdf_clean %>%
+  # After adding times (in seconds) to obtain absolute times, convert back to date/time type 'period'
   mutate(time = round(seconds_to_period(time), 2),
          young_rider_time = round(seconds_to_period(young_rider_time), 2))
+```
+
+
+```r
+tdf_clean %>%
+  select(time, young_rider_time) %>%
+  glimpse()
+```
+
+```
+Observations: 3,696
+Variables: 2
+$ time             <Period> 4M 22.47S, 4M 22.47S, 4M 22.47S, 4M 22.47S, 4M 22…
+$ young_rider_time <Period> NA, NA, 4M 22.47S, NA, NA, NA, NA, NA, NA, NA, NA…
 ```
 
 ### Part 2
 
 
 ```r
+# Set climb points NAs equal to 0 (to allow for calculating total points later on)
 mountains <- tdf_clean %>%
   select(stage, rider_name, climb_pts) %>%
   mutate(climb_pts = case_when(
@@ -222,22 +253,27 @@ mountains <- pivot_wider(mountains, id_cols = rider_name, names_from = stage, va
 
 ```r
 mountains <- mountains %>%
+  # Sum columns to obtain total climb points
   mutate(total_climb_pts = select(., stage_1:stage_21) %>% 
            rowSums()) %>%
+  # Keep top 30 climbers
   arrange(desc(total_climb_pts)) %>%
   head(30)
 ```
 
 
 ```r
+# Added rank, giving tied riders the same rank
 mountain_king <- mountains %>%
   mutate(rank = rank(-total_climb_pts, ties.method = "min"))
 ```
 
 
 ```r
+# Reorder columns for display
 mountain_king <- mountain_king[,c(1, 24, 2:23)]
 
+# All columns except name should be doubles
 mountain_king <- mountain_king %>%
   mutate(rank = as.numeric(rank))
 ```
@@ -276,40 +312,13 @@ $ stage_21        <dbl> 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
 $ total_climb_pts <dbl> 86, 78, 75, 67, 59, 59, 58, 50, 45, 44, 42, 40, 38, 3…
 ```
 
-```r
-mountain_king
-```
-
-```
-# A tibble: 30 x 24
-   rider_name  rank stage_1 stage_2 stage_3 stage_4 stage_5 stage_6 stage_7
-   <chr>      <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
- 1 Bardet, R…     1       0       0       0       0       0       0       0
- 2 Bernal, E…     2       0       0       0       0       0       0       0
- 3 Wellens, …     3       0       0       7       0      10      26       0
- 4 Caruso, D…     4       0       0       0       0       0       0       0
- 5 Nibali, V…     5       0       0       0       0       0       0       0
- 6 Yates, Si…     5       0       0       0       0       0       0       0
- 7 Quintana,…     7       0       0       1       0       0       0       0
- 8 Pinot, Th…     8       0       0       0       0       0       2       0
- 9 Lutsenko,…     9       0       0       0       0       0       0       0
-10 Kruijswij…    10       0       0       0       0       0       0       0
-# … with 20 more rows, and 15 more variables: stage_8 <dbl>, stage_9 <dbl>,
-#   stage_10 <dbl>, stage_11 <dbl>, stage_12 <dbl>, stage_13 <dbl>,
-#   stage_14 <dbl>, stage_15 <dbl>, stage_16 <dbl>, stage_17 <dbl>,
-#   stage_18 <dbl>, stage_19 <dbl>, stage_20 <dbl>, stage_21 <dbl>,
-#   total_climb_pts <dbl>
-```
-
 I decided to account for ties using the "minimum" method of function `rank()`, a technique commonly used in sports. As an example of how this works, if two competitors tie for 5th place, they will both receive rank 5, and the next competitor will receive rank 7, skipping over 6th place. This way, the ranks of competitors following ties are not unduly inflated, and competitors within tied groups are not arbitrarily or randomly assigned rankings.
 
 ## Task 3
 
-Use the data to construct a single visualization that depicts something about the 2019 Tour de France. A single visualization can include subplots, but I do not want, for example, 10 unrelated graphics. Your visualization should be well-polished with a title that tells a story, and aesthetics, font size, and style should be carefully chosen. You may construct this visualization with the mindset that it would appear in a presentation. Thus, animations are okay to utilize.
-
-
 
 ```r
+# Change NAs to 0s for point values
 tdf_plot <- tdf_clean %>%
   mutate(stage = str_c("stage_", stage),
          sprint_pts = case_when(
@@ -320,44 +329,30 @@ tdf_plot <- tdf_clean %>%
     is.na(climb_pts) ~ 0,
     TRUE ~ climb_pts
   )) %>%
+  # Add sprint points and climb points for total points
   mutate(total_pts = select(., c(sprint_pts, climb_pts)) %>%
            rowSums())
+```
 
+
+```r
+# Simplify to include only relevant variables
 tdf_plot <- tdf_plot %>%
-  select(rider_name, stage, sprint_pts, climb_pts, total_pts, classification)
+  select(rider_name, stage, sprint_pts, climb_pts, total_pts)
 
 tdf_points <- pivot_wider(tdf_plot, id_cols = rider_name, names_from = stage, values_from = total_pts)
 
+# Focus on the ten riders who earned the most total points
 tdf_points <- tdf_points %>%
   mutate(all_pts = select(., stage_1:stage_21) %>% 
            rowSums()) %>%
   arrange(desc(all_pts)) %>%
   head(10)
-tdf_points
-```
-
-```
-# A tibble: 10 x 23
-   rider_name stage_1 stage_2 stage_3 stage_4 stage_5 stage_6 stage_7 stage_8
-   <chr>        <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
- 1 Sagan, Pe…      50       0      26      28      40       0      33      27
- 2 Ewan, Cal…      20       0       0      20       6       0      30       0
- 3 Viviani, …       8       0      10      63      11       0      25      11
- 4 Colbrelli…      33       0      21      11      23       0      33       8
- 5 Matthews,…      27       0      32      16      22       1      18      28
- 6 Trentin, …      23       0      15      15      22       0       0      15
- 7 Stuyven, …       7       0      22      10       9       0      15       6
- 8 De Gendt,…       0       0       0       0       5      19       0      76
- 9 Alaphilip…       0       0      31       0       7      11       0      23
-10 Van Averm…      23       0      19       5      17       0       8      11
-# … with 14 more variables: stage_9 <dbl>, stage_10 <dbl>, stage_11 <dbl>,
-#   stage_12 <dbl>, stage_13 <dbl>, stage_14 <dbl>, stage_15 <dbl>,
-#   stage_16 <dbl>, stage_17 <dbl>, stage_18 <dbl>, stage_19 <dbl>,
-#   stage_20 <dbl>, stage_21 <dbl>, all_pts <dbl>
 ```
 
 
 ```r
+# Mutate data so the point total at each stage represents cumulative points rather than points earned in that stage
 tdf_points_cumulative <- tdf_points %>%
     mutate(stage_0 = 0,
            stage_2 = select(., stage_1:stage_2) %>%
@@ -402,60 +397,37 @@ tdf_points_cumulative <- tdf_points %>%
              rowSums()) %>%
   select(-all_pts)
 
+# Reorder the way tdf_points_cumulative will display
 tdf_points_cumulative <- tdf_points_cumulative[,c(1, 23, 2:22)]
 ```
 
 
-
 ```r
+# Pivot data to allow for plotting by stage
 tdf_points_cumulative <- pivot_longer(tdf_points_cumulative, -rider_name, names_to = "stage", values_to = "points")
 
+# Mutate stage so it will be ordered numerically, not alphabetically, in the animation
 tdf_points_cumulative <- tdf_points_cumulative %>%
   mutate(stage = as.numeric(str_extract(stage, "\\d+")))
 ```
 
 
-
 ```r
+# Relevel rider names so that bars of plot will slope downward from center
 tdf_points_cumulative <- tdf_points_cumulative %>%
   mutate(rider_name = fct_relevel(rider_name, "Alaphilippe, Julian", "De Gendt, Thomas", "Trentin, Matteo", "Colbrelli, Sonny", "Ewan, Caleb", "Sagan, Peter", "Viviani, Elia", "Matthews, Michael", "Stuyven, Jasper", "Van Avermaet, Greg"),
          sagan = case_when(
            rider_name == "Sagan, Peter" ~ "Y",
            TRUE ~ "N"
          ))
+
+# Set colors so Sagan's bar will appear green
 cols <- c("Y" = "lightgreen", "N" = "gray31")
 ```
 
 
 ```r
-tdf_points_cumulative %>%
-  filter(stage == 21) %>%
-  ggplot(aes(x = rider_name, y = points, fill = sagan)) + 
-  geom_bar(stat="identity") +
-  theme_light() +
-  theme(plot.title = element_text(size=18, face="bold"),
-        plot.subtitle = element_text(color="gray45", size=14),
-        plot.caption = element_text(size = 13, face = "italic", hjust = .5),
-        plot.tag = element_text(color="gray45", size=15, face="bold.italic"),
-        axis.title.x = element_text(color="palegreen4", size=15, face="bold"),
-        axis.title.y = element_text(color="palegreen4", size=15, face="bold"),
-        axis.text.x = element_text(color="gray45", size=13, angle=35, hjust = .9, vjust = .9),
-        legend.position = "none", 
-        axis.ticks = element_blank(), 
-        plot.tag.position = c(0.9,0.85)) +
-  ylim(0, 325) +  
-  scale_fill_manual(values = cols) +
-  labs(title = "Green Jersey Winner Peter Sagan Establishes Point Lead Early On", subtitle = "2019 Tour De France", tag = "Stage", x = "Rider", y = "Points Earned", caption = "Peter Sagan has won the green jersey a record seven times, including on his first attempt at the race in 2012.")
-```
-
-![](exam1_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
-
-
-
-
-
-
-```r
+# Make animated plot of points earned by stage
 ggplot(tdf_points_cumulative, aes(x = rider_name, y = points, fill = sagan)) + 
   geom_bar(stat= "identity") +
   theme_light() +
@@ -471,27 +443,27 @@ ggplot(tdf_points_cumulative, aes(x = rider_name, y = points, fill = sagan)) +
         plot.tag.position = c(0.9,0.85)) +
   ylim(0, 325) +
   scale_fill_manual(values = cols) +
-  labs(title = "Green Jersey Winner Peter Sagan Establishes Point Lead Early On", subtitle = "In 2019 Tour De France", tag = "Stage {closest_state}", x = "Rider", y = "Points Earned", caption = "Peter Sagan has won the green jersey a record seven times, including on his first attempt at the race in 2012.") +
+  labs(title = "Green Jersey Winner Peter Sagan Establishes Point Lead Early On", subtitle = "In 2019 Tour De France", tag = "Stage {closest_state}", x = "Top Ten Point-Earning Riders", y = "Points Earned", caption = "Peter Sagan has won the green jersey a record seven times, including on his first attempt at the race in 2012.") +
   transition_states(stage, transition_length = 5, state_length = 3) +
   ease_aes('linear')
 ```
 
-![](exam1_files/figure-html/unnamed-chunk-7-1.gif)<!-- -->
-
+![](exam1_files/figure-html/animated-plot-1.gif)<!-- -->
 
 ## References 
 
-Converting to decimal hours:
-https://www.r-bloggers.com/using-dates-and-times-in-r/
-
-deparse thang
-https://stackoverflow.com/questions/14577412/how-to-convert-variable-object-name-into-string
-
-row sums
+Inspiration for row summing:
 https://stackoverflow.com/questions/29006056/efficiently-sum-across-multiple-columns-in-r
 
+Inspiration for rank function:
 https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/rank
-rank function
 
+Inspiration for animated bar graph:
 https://www.r-graph-gallery.com/288-animated-barplot-transition.html
-animated bar graph
+
+Inspiration for rbind_list and lapply technique (which I first used in Hw 4):
+Lapply technique from:
+Florian, Post #2 on https://stackoverflow.com/questions/45452015/how-to-convert-list-of-list-into-a-tibble-dataframe
+
+Used rbind_list as an alternative to do.call(rbind, dfs):
+https://www.rdocumentation.org/packages/dplyr/versions/0.3.0.2/topics/rbind_list
