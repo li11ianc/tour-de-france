@@ -20,6 +20,9 @@ library(purrr)
 library(dplyr)
 library(lubridate)
 library(stringr)
+library(ggplot2)
+library(gganimate)
+library(patchwork)
 ```
 
 ## Data
@@ -79,6 +82,10 @@ tdf_clean <- messy_tdf %>%
 saveRDS(tdf_clean, "results/tdf_clean.rds")
 ```
 
+```{r}
+tdf_clean %>%
+  filter(rider_name == "Sagan, Peter")
+```
 ## Task 2
 
 ### Part 1
@@ -229,6 +236,136 @@ ggplot(data = tdf_plot, aes(x = team_name, y = points, fill = classification)) +
   coord_flip()
 ```
 
+```{r}
+tdf_plot <- tdf_clean %>%
+  mutate(stage = str_c("stage_", stage),
+         sprint_pts = case_when(
+    is.na(sprint_pts) ~ 0,
+    TRUE ~ sprint_pts
+  ), 
+  climb_pts = case_when(
+    is.na(climb_pts) ~ 0,
+    TRUE ~ climb_pts
+  )) %>%
+  mutate(total_pts = select(., c(sprint_pts, climb_pts)) %>%
+           rowSums())
+
+tdf_plot <- tdf_plot %>%
+  select(rider_name, stage, sprint_pts, climb_pts, total_pts)
+
+tdf_points <- pivot_wider(tdf_plot, id_cols = rider_name, names_from = stage, values_from = total_pts)
+
+tdf_points <- tdf_points %>%
+  mutate(all_pts = select(., stage_1:stage_21) %>% 
+           rowSums()) %>%
+  arrange(desc(all_pts)) %>%
+  head(10)
+
+tdf_points_cumulative <- tdf_points %>%
+    mutate(stage_0 = 0,
+           stage_2 = select(., stage_1:stage_2) %>%
+             rowSums(),
+           stage_3 = select(., stage_1:stage_3) %>%
+             rowSums(),
+           stage_4 = select(., stage_1:stage_4) %>%
+             rowSums(),
+           stage_5 = select(., stage_1:stage_5) %>%
+             rowSums(),
+           stage_6 = select(., stage_1:stage_6) %>%
+             rowSums(),
+           stage_7 = select(., stage_1:stage_7) %>%
+             rowSums(),
+           stage_8 = select(., stage_1:stage_8) %>%
+             rowSums(),
+           stage_9 = select(., stage_1:stage_9) %>%
+             rowSums(),
+           stage_10 = select(., stage_1:stage_10) %>%
+             rowSums(),
+           stage_11 = select(., stage_1:stage_11) %>%
+             rowSums(),
+           stage_12 = select(., stage_1:stage_12) %>%
+             rowSums(),
+           stage_13 = select(., stage_1:stage_13) %>%
+             rowSums(),
+           stage_14 = select(., stage_1:stage_14) %>%
+             rowSums(),
+           stage_15 = select(., stage_1:stage_15) %>%
+             rowSums(),
+           stage_16 = select(., stage_1:stage_16) %>%
+             rowSums(),
+           stage_17 = select(., stage_1:stage_17) %>%
+             rowSums(),
+           stage_18 = select(., stage_1:stage_18) %>%
+             rowSums(),
+           stage_19 = select(., stage_1:stage_19) %>%
+             rowSums(),
+           stage_20 = select(., stage_1:stage_20) %>%
+             rowSums(),
+           stage_21 = select(., stage_1:stage_21) %>%
+             rowSums()) %>%
+  select(-all_pts)
+
+tdf_points_cumulative <- tdf_points_cumulative[,c(1, 23, 2:22)]
+```
+
+
+```{r}
+tdf_points_cumulative <- pivot_longer(tdf_points_cumulative, -rider_name, names_to = "stage", values_to = "points")
+
+tdf_points_cumulative
+```
+
+```{r}
+# Make a ggplot, but add frame=year: one image per year
+ggplot(tdf_points_cumulative, aes(x = rider_name, y = points)) + 
+  geom_bar(stat='identity') +
+  theme_bw() +
+  # gganimate specific bits:
+  transition_states(stage, transition_length = 5, state_length = 5) +
+  ease_aes('sine-in-out') +
+  labs(title = 'Stage: {closest_state}')
+```
+ease_aes('sine-in-out')
+
+labs(title = 'Year: {frame_time}', x = 'GDP per capita', y = 'Life expectancy') +
+  transition_time(year) +
+  ease_aes('linear')
+
+
+```{r}
+sprint_points <- tdf_clean %>%
+  select(stage, rider_name, sprint_pts) %>%
+  mutate(sprint_pts = case_when(
+    is.na(sprint_pts) ~ 0,
+    TRUE ~ sprint_pts
+  ))
+
+sprint_points <- pivot_wider(sprint_points, id_cols = rider_name, names_from = stage, values_from = sprint_pts)
+
+sprint_points
+
+climb_points <- tdf_clean %>%
+  select(stage, rider_name, climb_pts) %>%
+  mutate(climb_pts = case_when(
+    is.na(climb_pts) ~ 0,
+    TRUE ~ climb_pts
+  ))
+
+climb_points <- pivot_wider(climb_points, id_cols = rider_name, names_from = stage, values_from = climb_pts)
+
+climb_points
+```
+
+
+arrange plots with patchwork !
+(ps_1993 | ps_2001 | ps_2009) /  ps_2017
+Supports operators +, -, | (besides), / (over)
+
+Specify layouts and spacing with plot_layout(), plot_spacer(), respectively
+
+Add grouping with { } or ( )
+
+Use & or * to add elements to all subplots, * only affects current nesting level
 
 
 ## References 

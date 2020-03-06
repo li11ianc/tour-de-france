@@ -18,6 +18,9 @@ library(purrr)
 library(dplyr)
 library(lubridate)
 library(stringr)
+library(ggplot2)
+library(gganimate)
+library(patchwork)
 ```
 
 ## Data
@@ -82,6 +85,31 @@ tdf_clean <- messy_tdf %>%
 saveRDS(tdf_clean, "results/tdf_clean.rds")
 ```
 
+
+```r
+tdf_clean %>%
+  filter(rider_name == "Sagan, Peter")
+```
+
+```
+# A tibble: 21 x 18
+   stage rider_name rider_nat team_name team_nat dep_city arr_city
+   <int> <chr>      <chr>     <chr>     <chr>    <chr>    <chr>   
+ 1     1 Sagan, Pe… Slovakia  Bora - H… Germany  Brussels Brussels
+ 2     2 Sagan, Pe… Slovakia  Bora - H… Germany  Brussels Brussels
+ 3     3 Sagan, Pe… Slovakia  Bora - H… Germany  Binche   Epernay 
+ 4     4 Sagan, Pe… Slovakia  Bora - H… Germany  Reims    Nancy   
+ 5     5 Sagan, Pe… Slovakia  Bora - H… Germany  Saint-D… Colmar  
+ 6     6 Sagan, Pe… Slovakia  Bora - H… Germany  Mulhouse Planche…
+ 7     7 Sagan, Pe… Slovakia  Bora - H… Germany  Belfort  Chalon-…
+ 8     8 Sagan, Pe… Slovakia  Bora - H… Germany  Macon    Saint E…
+ 9     9 Sagan, Pe… Slovakia  Bora - H… Germany  Saint E… Brioude 
+10    10 Sagan, Pe… Slovakia  Bora - H… Germany  Saint-F… Albi    
+# … with 11 more rows, and 11 more variables: classification <chr>,
+#   distance <dbl>, start_date <date>, time <chr>, time_rank <int>,
+#   sprint_pts <dbl>, sprint_rank <int>, climb_pts <dbl>, climb_rank <int>,
+#   young_rider_time <chr>, young_rider_rank <int>
+```
 ## Task 2
 
 ### Part 1
@@ -290,7 +318,7 @@ ggplot(data = tdf_plot, aes(x = team_name, y = time, color = classification)) +
   coord_flip()
 ```
 
-![](exam1_files/figure-html/unnamed-chunk-1-1.png)<!-- -->
+![](exam1_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
 
 ```r
 ggplot(data = tdf_plot, aes(x = team_name, y = points)) +
@@ -298,7 +326,7 @@ ggplot(data = tdf_plot, aes(x = team_name, y = points)) +
   coord_flip()
 ```
 
-![](exam1_files/figure-html/unnamed-chunk-1-2.png)<!-- -->
+![](exam1_files/figure-html/unnamed-chunk-2-2.png)<!-- -->
 
 ```r
 ggplot(data = tdf_plot, aes(x = team_name, y = points, fill = classification)) +
@@ -306,8 +334,201 @@ ggplot(data = tdf_plot, aes(x = team_name, y = points, fill = classification)) +
   coord_flip()
 ```
 
-![](exam1_files/figure-html/unnamed-chunk-1-3.png)<!-- -->
+![](exam1_files/figure-html/unnamed-chunk-2-3.png)<!-- -->
 
+
+```r
+tdf_plot <- tdf_clean %>%
+  mutate(stage = str_c("stage_", stage),
+         sprint_pts = case_when(
+    is.na(sprint_pts) ~ 0,
+    TRUE ~ sprint_pts
+  ), 
+  climb_pts = case_when(
+    is.na(climb_pts) ~ 0,
+    TRUE ~ climb_pts
+  )) %>%
+  mutate(total_pts = select(., c(sprint_pts, climb_pts)) %>%
+           rowSums())
+
+tdf_plot <- tdf_plot %>%
+  select(rider_name, stage, sprint_pts, climb_pts, total_pts)
+
+tdf_points <- pivot_wider(tdf_plot, id_cols = rider_name, names_from = stage, values_from = total_pts)
+
+tdf_points <- tdf_points %>%
+  mutate(all_pts = select(., stage_1:stage_21) %>% 
+           rowSums()) %>%
+  arrange(desc(all_pts)) %>%
+  head(10)
+
+tdf_points_cumulative <- tdf_points %>%
+    mutate(stage_0 = 0,
+           stage_2 = select(., stage_1:stage_2) %>%
+             rowSums(),
+           stage_3 = select(., stage_1:stage_3) %>%
+             rowSums(),
+           stage_4 = select(., stage_1:stage_4) %>%
+             rowSums(),
+           stage_5 = select(., stage_1:stage_5) %>%
+             rowSums(),
+           stage_6 = select(., stage_1:stage_6) %>%
+             rowSums(),
+           stage_7 = select(., stage_1:stage_7) %>%
+             rowSums(),
+           stage_8 = select(., stage_1:stage_8) %>%
+             rowSums(),
+           stage_9 = select(., stage_1:stage_9) %>%
+             rowSums(),
+           stage_10 = select(., stage_1:stage_10) %>%
+             rowSums(),
+           stage_11 = select(., stage_1:stage_11) %>%
+             rowSums(),
+           stage_12 = select(., stage_1:stage_12) %>%
+             rowSums(),
+           stage_13 = select(., stage_1:stage_13) %>%
+             rowSums(),
+           stage_14 = select(., stage_1:stage_14) %>%
+             rowSums(),
+           stage_15 = select(., stage_1:stage_15) %>%
+             rowSums(),
+           stage_16 = select(., stage_1:stage_16) %>%
+             rowSums(),
+           stage_17 = select(., stage_1:stage_17) %>%
+             rowSums(),
+           stage_18 = select(., stage_1:stage_18) %>%
+             rowSums(),
+           stage_19 = select(., stage_1:stage_19) %>%
+             rowSums(),
+           stage_20 = select(., stage_1:stage_20) %>%
+             rowSums(),
+           stage_21 = select(., stage_1:stage_21) %>%
+             rowSums()) %>%
+  select(-all_pts)
+
+tdf_points_cumulative <- tdf_points_cumulative[,c(1, 23, 2:22)]
+```
+
+
+
+```r
+tdf_points_cumulative <- pivot_longer(tdf_points_cumulative, -rider_name, names_to = "stage", values_to = "points")
+
+tdf_points_cumulative
+```
+
+```
+# A tibble: 220 x 3
+   rider_name   stage   points
+   <chr>        <chr>    <dbl>
+ 1 Sagan, Peter stage_0      0
+ 2 Sagan, Peter stage_1     50
+ 3 Sagan, Peter stage_2     50
+ 4 Sagan, Peter stage_3     76
+ 5 Sagan, Peter stage_4    104
+ 6 Sagan, Peter stage_5    144
+ 7 Sagan, Peter stage_6    144
+ 8 Sagan, Peter stage_7    177
+ 9 Sagan, Peter stage_8    204
+10 Sagan, Peter stage_9    204
+# … with 210 more rows
+```
+
+
+```r
+# Make a ggplot, but add frame=year: one image per year
+ggplot(tdf_points_cumulative, aes(x = rider_name, y = points)) + 
+  geom_bar(stat='identity') +
+  theme_bw() +
+  # gganimate specific bits:
+  transition_states(stage, transition_length = 5, state_length = 5) +
+  ease_aes('sine-in-out') +
+  labs(title = 'Stage: {closest_state}')
+```
+
+![](exam1_files/figure-html/unnamed-chunk-5-1.gif)<!-- -->
+ease_aes('sine-in-out')
+
+labs(title = 'Year: {frame_time}', x = 'GDP per capita', y = 'Life expectancy') +
+  transition_time(year) +
+  ease_aes('linear')
+
+
+
+```r
+sprint_points <- tdf_clean %>%
+  select(stage, rider_name, sprint_pts) %>%
+  mutate(sprint_pts = case_when(
+    is.na(sprint_pts) ~ 0,
+    TRUE ~ sprint_pts
+  ))
+
+sprint_points <- pivot_wider(sprint_points, id_cols = rider_name, names_from = stage, values_from = sprint_pts)
+
+sprint_points
+```
+
+```
+# A tibble: 176 x 22
+   rider_name   `1`   `2`   `3`   `4`   `5`   `6`   `7`   `8`   `9`  `10`  `11`
+   <chr>      <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+ 1 Teunissen…    50     0     0    14     0     0     0     0     0     0     3
+ 2 Sagan, Pe…    50     0    26    28    40     0    33    27     0    25    28
+ 3 Ewan, Cal…    20     0     0    20     6     0    30     0     0    22    50
+ 4 Nizzolo, …    18     0     3    12     7     0    12     0     0     0     0
+ 5 Colbrelli…    33     0    21    11    23     0    33     8     0    22    23
+ 6 Matthews,…    27     0    32    16    22     1    18    28     0    23     0
+ 7 Trentin, …    23     0    15    15    22     0     0    15     0    11     0
+ 8 Naesen, O…    10     0     0     0     0     0     7     0    25     9     0
+ 9 Viviani, …     8     0    10    63    11     0    25    11     0    25    31
+10 Stuyven, …     7     0    22    10     9     0    15     6    34     2     7
+# … with 166 more rows, and 10 more variables: `12` <dbl>, `13` <dbl>,
+#   `14` <dbl>, `15` <dbl>, `16` <dbl>, `17` <dbl>, `18` <dbl>, `19` <dbl>,
+#   `20` <dbl>, `21` <dbl>
+```
+
+```r
+climb_points <- tdf_clean %>%
+  select(stage, rider_name, climb_pts) %>%
+  mutate(climb_pts = case_when(
+    is.na(climb_pts) ~ 0,
+    TRUE ~ climb_pts
+  ))
+
+climb_points <- pivot_wider(climb_points, id_cols = rider_name, names_from = stage, values_from = climb_pts)
+
+climb_points
+```
+
+```
+# A tibble: 176 x 22
+   rider_name   `1`   `2`   `3`   `4`   `5`   `6`   `7`   `8`   `9`  `10`  `11`
+   <chr>      <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+ 1 Teunissen…     0     0     0     0     0     0     0     0     0     0     0
+ 2 Sagan, Pe…     0     0     0     0     0     0     0     0     0     0     0
+ 3 Ewan, Cal…     0     0     0     0     0     0     0     0     0     0     0
+ 4 Nizzolo, …     0     0     0     0     0     0     0     0     0     0     0
+ 5 Colbrelli…     0     0     0     0     0     0     0     0     0     0     0
+ 6 Matthews,…     0     0     0     0     0     0     0     0     0     0     0
+ 7 Trentin, …     0     0     0     0     0     0     0     0     0     0     0
+ 8 Naesen, O…     0     0     0     0     0     0     0     0     0     0     0
+ 9 Viviani, …     0     0     0     0     0     0     0     0     0     0     0
+10 Stuyven, …     0     0     0     0     0     0     0     0     0     0     0
+# … with 166 more rows, and 10 more variables: `12` <dbl>, `13` <dbl>,
+#   `14` <dbl>, `15` <dbl>, `16` <dbl>, `17` <dbl>, `18` <dbl>, `19` <dbl>,
+#   `20` <dbl>, `21` <dbl>
+```
+
+
+arrange plots with patchwork !
+(ps_1993 | ps_2001 | ps_2009) /  ps_2017
+Supports operators +, -, | (besides), / (over)
+
+Specify layouts and spacing with plot_layout(), plot_spacer(), respectively
+
+Add grouping with { } or ( )
+
+Use & or * to add elements to all subplots, * only affects current nesting level
 
 
 ## References 
