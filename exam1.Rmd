@@ -312,7 +312,8 @@ tdf_points_cumulative <- tdf_points_cumulative[,c(1, 23, 2:22)]
 ```{r}
 tdf_points_cumulative <- pivot_longer(tdf_points_cumulative, -rider_name, names_to = "stage", values_to = "points")
 
-tdf_points_cumulative
+tdf_points_cumulative <- tdf_points_cumulative %>%
+  mutate(stage = as.numeric(str_extract(stage, "\\d+")))
 ```
 
 ```{r}
@@ -321,7 +322,7 @@ ggplot(tdf_points_cumulative, aes(x = rider_name, y = points)) +
   geom_bar(stat='identity') +
   theme_bw() +
   # gganimate specific bits:
-  transition_states(stage, transition_length = 5, state_length = 5) +
+  transition_states(stage, transition_length = 10, state_length = 1) +
   ease_aes('sine-in-out') +
   labs(title = 'Stage: {closest_state}')
 ```

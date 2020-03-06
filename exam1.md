@@ -414,24 +414,8 @@ tdf_points_cumulative <- tdf_points_cumulative[,c(1, 23, 2:22)]
 ```r
 tdf_points_cumulative <- pivot_longer(tdf_points_cumulative, -rider_name, names_to = "stage", values_to = "points")
 
-tdf_points_cumulative
-```
-
-```
-# A tibble: 220 x 3
-   rider_name   stage   points
-   <chr>        <chr>    <dbl>
- 1 Sagan, Peter stage_0      0
- 2 Sagan, Peter stage_1     50
- 3 Sagan, Peter stage_2     50
- 4 Sagan, Peter stage_3     76
- 5 Sagan, Peter stage_4    104
- 6 Sagan, Peter stage_5    144
- 7 Sagan, Peter stage_6    144
- 8 Sagan, Peter stage_7    177
- 9 Sagan, Peter stage_8    204
-10 Sagan, Peter stage_9    204
-# … with 210 more rows
+tdf_points_cumulative <- tdf_points_cumulative %>%
+  mutate(stage = as.numeric(str_extract(stage, "\\d+")))
 ```
 
 
@@ -441,7 +425,7 @@ ggplot(tdf_points_cumulative, aes(x = rider_name, y = points)) +
   geom_bar(stat='identity') +
   theme_bw() +
   # gganimate specific bits:
-  transition_states(stage, transition_length = 5, state_length = 5) +
+  transition_states(stage, transition_length = 10, state_length = 1) +
   ease_aes('sine-in-out') +
   labs(title = 'Stage: {closest_state}')
 ```
