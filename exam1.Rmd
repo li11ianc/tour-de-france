@@ -307,90 +307,59 @@ tdf_points_cumulative <- tdf_points_cumulative %>%
 
 ```{r}
 tdf_points_cumulative <- tdf_points_cumulative %>%
-  mutate(rider_name <- fct_relevel(rider_name, "Van Avermaet, Greg", "De Gendt, Thomas", "Trentin, Matteo", "Colbrelli, Sonny", "Ewan, Caleb", "Sagan, Peter", "Viviani, Elia", "Matthews, Michael", "Stuyven, Jasper", "Alaphilippe, Julian"))
+  mutate(rider_name = fct_relevel(rider_name, "Alaphilippe, Julian", "De Gendt, Thomas", "Trentin, Matteo", "Colbrelli, Sonny", "Ewan, Caleb", "Sagan, Peter", "Viviani, Elia", "Matthews, Michael", "Stuyven, Jasper", "Van Avermaet, Greg"),
+         sagan = case_when(
+           rider_name == "Sagan, Peter" ~ "Y",
+           TRUE ~ "N"
+         ))
+cols <- c("Y" = "lightgreen", "N" = "gray31")
 ```
 
-```{r}
+```{r fig.height=3.5, fig.width=5}
 tdf_points_cumulative %>%
   filter(stage == 21) %>%
-  ggplot(aes(x = rider_name, y = points, fill = rider_name)) + 
+  ggplot(aes(x = rider_name, y = points, fill = sagan)) + 
   geom_bar(stat="identity") +
   theme_light() +
-  theme(plot.title = element_text(size=16, face="bold"),
-        plot.subtitle = element_text(color="gray45", size=12, face="bold.italic"),
-        axis.title.x = element_text(color="palegreen4", size=10, face="bold.italic"),
-        axis.title.y = element_text(color="palegreen4", size=10, face="bold.italic"),
-        axis.text.x = element_text(color="gray45", size=9, angle=35, hjust = 1),
+  theme(plot.title = element_text(size=18, face="bold"),
+        plot.subtitle = element_text(color="gray45", size=14),
+        plot.caption = element_text(size = 13, face = "italic", hjust = .5),
+        plot.tag = element_text(color="gray45", size=15, face="bold.italic"),
+        axis.title.x = element_text(color="palegreen4", size=15, face="bold"),
+        axis.title.y = element_text(color="palegreen4", size=15, face="bold"),
+        axis.text.x = element_text(color="gray45", size=13, angle=35, hjust = .9, vjust = .9),
         legend.position = "none", 
-        axis.ticks = element_blank()) +
-  ylim(0, 325) +
-  scale_fill_manual(values = c("gray31", "gray31", "gray31", "gray31", "gray31", "lightgreen", "gray31", "gray31", "gray31", "gray31")) +
-  labs(title = "Green Jersey Winner Peter Sagan Establishes and Maintains Point Lead Early On In 2019 Tour De France", subtitle = "Stage", x = "Rider", y = "Points Earned")
+        axis.ticks = element_blank(), 
+        plot.tag.position = c(0.9,0.85)) +
+  ylim(0, 325) +  
+  scale_fill_manual(values = cols) +
+  labs(title = "Green Jersey Winner Peter Sagan Establishes Point Lead Early On", subtitle = "2019 Tour De France", tag = "Stage", x = "Rider", y = "Points Earned", caption = "Peter Sagan has won the green jersey a record seven times, including on his first attempt at the race in 2012.")
 ```
 
 
 
 
 
-```{r}
-ggplot(tdf_points_cumulative, aes(x = rider_name, y = points)) + 
-  geom_bar(stat='identity') +
-  theme_bw() +
+```{r fig.height=8, fig.width=12}
+ggplot(tdf_points_cumulative, aes(x = rider_name, y = points, fill = sagan)) + 
+  geom_bar(stat= "identity") +
   theme_light() +
-  theme(plot.title = element_text(size=16, face="bold"),
-        plot.subtitle = element_text(color="gray45", size=12, face="bold.italic"),
-        axis.title.x = element_text(color="palegreen4", size=11, face="bold.italic"),
-        axis.title.y = element_text(color="palegreen4", size=11, face="bold.italic"),
-        axis.text.x = element_text(color="gray45", size=9, angle=35, hjust = 1),
+  theme(plot.title = element_text(size=18, face="bold"),
+        plot.subtitle = element_text(color="gray45", size=14),
+        plot.caption = element_text(size = 13, face = "italic", hjust = .5),
+        plot.tag = element_text(color="gray45", size=15, face="bold.italic"),
+        axis.title.x = element_text(color="palegreen4", size=15, face="bold"),
+        axis.title.y = element_text(color="palegreen4", size=15, face="bold"),
+        axis.text.x = element_text(color="gray45", size=13, angle=35, hjust = .9, vjust = .9),
         legend.position = "none", 
-        axis.ticks = element_blank()) +
+        axis.ticks = element_blank(), 
+        plot.tag.position = c(0.9,0.85)) +
   ylim(0, 325) +
-  scale_fill_manual(values = c("gray31", "gray31", "gray31", "gray31", "gray31", "lightgreen", "gray31", "gray31", "gray31", "gray31")) +
-  labs(title = "Green Jersey Winner Peter Sagan Establishes and Maintains Point Lead Early On In 2019 Tour De France", subtitle = "Stage {closest_state}", x = "Rider", y = "Points Earned") +
+  scale_fill_manual(values = cols) +
+  labs(title = "Green Jersey Winner Peter Sagan Establishes Point Lead Early On", subtitle = "In 2019 Tour De France", tag = "Stage {closest_state}", x = "Rider", y = "Points Earned", caption = "Peter Sagan has won the green jersey a record seven times, including on his first attempt at the race in 2012.") +
   transition_states(stage, transition_length = 5, state_length = 3) +
   ease_aes('linear')
 ```
-ease_aes('sine-in-out')
-
-labs(title = 'Year: {frame_time}', x = 'GDP per capita', y = 'Life expectancy') +
-  transition_time(year) +
-  ease_aes('linear')
-
-
-```{r}
-sprint_points <- tdf_clean %>%
-  select(stage, rider_name, sprint_pts) %>%
-  mutate(sprint_pts = case_when(
-    is.na(sprint_pts) ~ 0,
-    TRUE ~ sprint_pts
-  ))
-
-sprint_points <- pivot_wider(sprint_points, id_cols = rider_name, names_from = stage, values_from = sprint_pts)
-
-sprint_points
-
-climb_points <- tdf_clean %>%
-  select(stage, rider_name, climb_pts) %>%
-  mutate(climb_pts = case_when(
-    is.na(climb_pts) ~ 0,
-    TRUE ~ climb_pts
-  ))
-
-climb_points <- pivot_wider(climb_points, id_cols = rider_name, names_from = stage, values_from = climb_pts)
-
-climb_points
-```
-
-
-arrange plots with patchwork !
-(ps_1993 | ps_2001 | ps_2009) /  ps_2017
-Supports operators +, -, | (besides), / (over)
-
-Specify layouts and spacing with plot_layout(), plot_spacer(), respectively
-
-Add grouping with { } or ( )
-
-Use & or * to add elements to all subplots, * only affects current nesting level
 
 
 ## References 

@@ -418,26 +418,34 @@ tdf_points_cumulative <- tdf_points_cumulative %>%
 
 ```r
 tdf_points_cumulative <- tdf_points_cumulative %>%
-  mutate(rider_name <- fct_relevel(rider_name, "Van Avermaet, Greg", "De Gendt, Thomas", "Trentin, Matteo", "Colbrelli, Sonny", "Ewan, Caleb", "Sagan, Peter", "Viviani, Elia", "Matthews, Michael", "Stuyven, Jasper", "Alaphilippe, Julian"))
+  mutate(rider_name = fct_relevel(rider_name, "Alaphilippe, Julian", "De Gendt, Thomas", "Trentin, Matteo", "Colbrelli, Sonny", "Ewan, Caleb", "Sagan, Peter", "Viviani, Elia", "Matthews, Michael", "Stuyven, Jasper", "Van Avermaet, Greg"),
+         sagan = case_when(
+           rider_name == "Sagan, Peter" ~ "Y",
+           TRUE ~ "N"
+         ))
+cols <- c("Y" = "lightgreen", "N" = "gray31")
 ```
 
 
 ```r
 tdf_points_cumulative %>%
   filter(stage == 21) %>%
-  ggplot(aes(x = rider_name, y = points, fill = rider_name)) + 
+  ggplot(aes(x = rider_name, y = points, fill = sagan)) + 
   geom_bar(stat="identity") +
   theme_light() +
-  theme(plot.title = element_text(size=16, face="bold"),
-        plot.subtitle = element_text(color="gray45", size=12, face="bold.italic"),
-        axis.title.x = element_text(color="palegreen4", size=10, face="bold.italic"),
-        axis.title.y = element_text(color="palegreen4", size=10, face="bold.italic"),
-        axis.text.x = element_text(color="gray45", size=9, angle=35, hjust = 1),
+  theme(plot.title = element_text(size=18, face="bold"),
+        plot.subtitle = element_text(color="gray45", size=14),
+        plot.caption = element_text(size = 13, face = "italic", hjust = .5),
+        plot.tag = element_text(color="gray45", size=15, face="bold.italic"),
+        axis.title.x = element_text(color="palegreen4", size=15, face="bold"),
+        axis.title.y = element_text(color="palegreen4", size=15, face="bold"),
+        axis.text.x = element_text(color="gray45", size=13, angle=35, hjust = .9, vjust = .9),
         legend.position = "none", 
-        axis.ticks = element_blank()) +
-  ylim(0, 325) +
-  scale_fill_manual(values = c("gray31", "gray31", "gray31", "gray31", "gray31", "lightgreen", "gray31", "gray31", "gray31", "gray31")) +
-  labs(title = "Green Jersey Winner Peter Sagan Establishes and Maintains Point Lead Early On In 2019 Tour De France", subtitle = "Stage", x = "Rider", y = "Points Earned")
+        axis.ticks = element_blank(), 
+        plot.tag.position = c(0.9,0.85)) +
+  ylim(0, 325) +  
+  scale_fill_manual(values = cols) +
+  labs(title = "Green Jersey Winner Peter Sagan Establishes Point Lead Early On", subtitle = "2019 Tour De France", tag = "Stage", x = "Rider", y = "Points Earned", caption = "Peter Sagan has won the green jersey a record seven times, including on his first attempt at the race in 2012.")
 ```
 
 ![](exam1_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
@@ -448,107 +456,27 @@ tdf_points_cumulative %>%
 
 
 ```r
-ggplot(tdf_points_cumulative, aes(x = rider_name, y = points)) + 
-  geom_bar(stat='identity') +
-  theme_bw() +
+ggplot(tdf_points_cumulative, aes(x = rider_name, y = points, fill = sagan)) + 
+  geom_bar(stat= "identity") +
   theme_light() +
-  theme(plot.title = element_text(size=16, face="bold"),
-        plot.subtitle = element_text(color="gray45", size=12, face="bold.italic"),
-        axis.title.x = element_text(color="palegreen4", size=11, face="bold.italic"),
-        axis.title.y = element_text(color="palegreen4", size=11, face="bold.italic"),
-        axis.text.x = element_text(color="gray45", size=9, angle=35, hjust = 1),
+  theme(plot.title = element_text(size=18, face="bold"),
+        plot.subtitle = element_text(color="gray45", size=14),
+        plot.caption = element_text(size = 13, face = "italic", hjust = .5),
+        plot.tag = element_text(color="gray45", size=15, face="bold.italic"),
+        axis.title.x = element_text(color="palegreen4", size=15, face="bold"),
+        axis.title.y = element_text(color="palegreen4", size=15, face="bold"),
+        axis.text.x = element_text(color="gray45", size=13, angle=35, hjust = .9, vjust = .9),
         legend.position = "none", 
-        axis.ticks = element_blank()) +
+        axis.ticks = element_blank(), 
+        plot.tag.position = c(0.9,0.85)) +
   ylim(0, 325) +
-  scale_fill_manual(values = c("gray31", "gray31", "gray31", "gray31", "gray31", "lightgreen", "gray31", "gray31", "gray31", "gray31")) +
-  labs(title = "Green Jersey Winner Peter Sagan Establishes and Maintains Point Lead Early On In 2019 Tour De France", subtitle = "Stage {closest_state}", x = "Rider", y = "Points Earned") +
+  scale_fill_manual(values = cols) +
+  labs(title = "Green Jersey Winner Peter Sagan Establishes Point Lead Early On", subtitle = "In 2019 Tour De France", tag = "Stage {closest_state}", x = "Rider", y = "Points Earned", caption = "Peter Sagan has won the green jersey a record seven times, including on his first attempt at the race in 2012.") +
   transition_states(stage, transition_length = 5, state_length = 3) +
   ease_aes('linear')
 ```
 
 ![](exam1_files/figure-html/unnamed-chunk-7-1.gif)<!-- -->
-ease_aes('sine-in-out')
-
-labs(title = 'Year: {frame_time}', x = 'GDP per capita', y = 'Life expectancy') +
-  transition_time(year) +
-  ease_aes('linear')
-
-
-
-```r
-sprint_points <- tdf_clean %>%
-  select(stage, rider_name, sprint_pts) %>%
-  mutate(sprint_pts = case_when(
-    is.na(sprint_pts) ~ 0,
-    TRUE ~ sprint_pts
-  ))
-
-sprint_points <- pivot_wider(sprint_points, id_cols = rider_name, names_from = stage, values_from = sprint_pts)
-
-sprint_points
-```
-
-```
-# A tibble: 176 x 22
-   rider_name   `1`   `2`   `3`   `4`   `5`   `6`   `7`   `8`   `9`  `10`  `11`
-   <chr>      <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
- 1 Teunissen…    50     0     0    14     0     0     0     0     0     0     3
- 2 Sagan, Pe…    50     0    26    28    40     0    33    27     0    25    28
- 3 Ewan, Cal…    20     0     0    20     6     0    30     0     0    22    50
- 4 Nizzolo, …    18     0     3    12     7     0    12     0     0     0     0
- 5 Colbrelli…    33     0    21    11    23     0    33     8     0    22    23
- 6 Matthews,…    27     0    32    16    22     1    18    28     0    23     0
- 7 Trentin, …    23     0    15    15    22     0     0    15     0    11     0
- 8 Naesen, O…    10     0     0     0     0     0     7     0    25     9     0
- 9 Viviani, …     8     0    10    63    11     0    25    11     0    25    31
-10 Stuyven, …     7     0    22    10     9     0    15     6    34     2     7
-# … with 166 more rows, and 10 more variables: `12` <dbl>, `13` <dbl>,
-#   `14` <dbl>, `15` <dbl>, `16` <dbl>, `17` <dbl>, `18` <dbl>, `19` <dbl>,
-#   `20` <dbl>, `21` <dbl>
-```
-
-```r
-climb_points <- tdf_clean %>%
-  select(stage, rider_name, climb_pts) %>%
-  mutate(climb_pts = case_when(
-    is.na(climb_pts) ~ 0,
-    TRUE ~ climb_pts
-  ))
-
-climb_points <- pivot_wider(climb_points, id_cols = rider_name, names_from = stage, values_from = climb_pts)
-
-climb_points
-```
-
-```
-# A tibble: 176 x 22
-   rider_name   `1`   `2`   `3`   `4`   `5`   `6`   `7`   `8`   `9`  `10`  `11`
-   <chr>      <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
- 1 Teunissen…     0     0     0     0     0     0     0     0     0     0     0
- 2 Sagan, Pe…     0     0     0     0     0     0     0     0     0     0     0
- 3 Ewan, Cal…     0     0     0     0     0     0     0     0     0     0     0
- 4 Nizzolo, …     0     0     0     0     0     0     0     0     0     0     0
- 5 Colbrelli…     0     0     0     0     0     0     0     0     0     0     0
- 6 Matthews,…     0     0     0     0     0     0     0     0     0     0     0
- 7 Trentin, …     0     0     0     0     0     0     0     0     0     0     0
- 8 Naesen, O…     0     0     0     0     0     0     0     0     0     0     0
- 9 Viviani, …     0     0     0     0     0     0     0     0     0     0     0
-10 Stuyven, …     0     0     0     0     0     0     0     0     0     0     0
-# … with 166 more rows, and 10 more variables: `12` <dbl>, `13` <dbl>,
-#   `14` <dbl>, `15` <dbl>, `16` <dbl>, `17` <dbl>, `18` <dbl>, `19` <dbl>,
-#   `20` <dbl>, `21` <dbl>
-```
-
-
-arrange plots with patchwork !
-(ps_1993 | ps_2001 | ps_2009) /  ps_2017
-Supports operators +, -, | (besides), / (over)
-
-Specify layouts and spacing with plot_layout(), plot_spacer(), respectively
-
-Add grouping with { } or ( )
-
-Use & or * to add elements to all subplots, * only affects current nesting level
 
 
 ## References 
