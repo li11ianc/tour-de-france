@@ -65,7 +65,8 @@ tdf_clean <- messy_tdf %>%
          distance = as.numeric(str_replace(distance, ",", ".")), 
          start_date = date(str_extract(start_date, "\\d{4}-\\d{2}-\\d{2}")),
          time_rank = as.integer(time_rank), 
-         sprint_pts = as.numeric(sprint_pts),
+         # One cyclist was mistakenly recorded with negative points
+         sprint_pts = abs(as.numeric(sprint_pts)),
          sprint_rank = as.integer(sprint_rank),
          climb_pts = as.numeric(climb_pts),
          climb_rank = as.integer(climb_rank),
@@ -209,6 +210,24 @@ mountain_king
 I decided to account for ties using the "minimum" method of function `rank()`, a technique commonly used in sports. As an example of how this works, if two competitors tie for 5th place, they will both receive rank 5, and the next competitor will receive rank 7, skipping over 6th place. This way, the ranks of competitors following ties are not unduly inflated, and competitors within tied groups are not arbitrarily or randomly assigned rankings.
 
 ## Task 3
+
+Use the data to construct a single visualization that depicts something about the 2019 Tour de France. A single visualization can include subplots, but I do not want, for example, 10 unrelated graphics. Your visualization should be well-polished with a title that tells a story, and aesthetics, font size, and style should be carefully chosen. You may construct this visualization with the mindset that it would appear in a presentation. Thus, animations are okay to utilize.
+
+-animation of boxplots of times by team, how spread changes each stage
+```{r}
+tdf_plot <- tdf_clean %>%
+  mutate(points = (sprint_pts + climb_pts), 
+         time = period_to_seconds(time))
+ggplot(data = tdf_plot, aes(x = team_name, y = time, color = classification)) +
+  geom_boxplot() +
+  coord_flip()
+ggplot(data = tdf_plot, aes(x = team_name, y = points)) +
+  geom_boxplot() +
+  coord_flip()
+ggplot(data = tdf_plot, aes(x = team_name, y = points, fill = classification)) +
+  geom_bar(stat = "identity") +
+  coord_flip()
+```
 
 
 
