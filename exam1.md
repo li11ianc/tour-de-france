@@ -429,18 +429,18 @@ cols <- c("Y" = "lightgreen", "N" = "gray31")
 ```r
 # Make animated plot of points earned by stage
 ggplot(tdf_points_cumulative, aes(x = rider_name, y = points, fill = sagan)) + 
-  geom_bar(stat= "identity") +
+  geom_bar(stat = "identity") +
   theme_light() +
-  theme(plot.title = element_text(size=18, face="bold"),
-        plot.subtitle = element_text(color="gray45", size=14),
+  theme(plot.title = element_text(size = 18, face = "bold"),
+        plot.subtitle = element_text(color = "gray45", size = 14),
         plot.caption = element_text(size = 13, face = "italic", hjust = .5),
-        plot.tag = element_text(color="gray45", size=15, face="bold.italic"),
-        axis.title.x = element_text(color="palegreen4", size=15, face="bold"),
-        axis.title.y = element_text(color="palegreen4", size=15, face="bold"),
-        axis.text.x = element_text(color="gray45", size=13, angle=35, hjust = .9, vjust = .9),
+        plot.tag = element_text(color ="gray45", size = 15, face = "bold.italic"),
+        axis.title.x = element_text(color = "palegreen4", size = 15, face = "bold"),
+        axis.title.y = element_text(color = "palegreen4", size = 15, face = "bold"),
+        axis.text.x = element_text(color = "gray45", size = 13, angle = 35, hjust = .9, vjust = .9),
         legend.position = "none", 
         axis.ticks = element_blank(), 
-        plot.tag.position = c(0.9,0.85)) +
+        plot.tag.position = c(0.9, 0.85)) +
   ylim(0, 325) +
   scale_fill_manual(values = cols) +
   labs(title = "Green Jersey Winner Peter Sagan Establishes Point Lead Early On", subtitle = "In 2019 Tour De France", tag = "Stage {closest_state}", x = "Top Ten Point-Earning Riders", y = "Points Earned", caption = "Peter Sagan has won the green jersey a record seven times, including on his first attempt at the race in 2012.") +
