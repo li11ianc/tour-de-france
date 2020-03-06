@@ -220,21 +220,6 @@ I decided to account for ties using the "minimum" method of function `rank()`, a
 
 Use the data to construct a single visualization that depicts something about the 2019 Tour de France. A single visualization can include subplots, but I do not want, for example, 10 unrelated graphics. Your visualization should be well-polished with a title that tells a story, and aesthetics, font size, and style should be carefully chosen. You may construct this visualization with the mindset that it would appear in a presentation. Thus, animations are okay to utilize.
 
--animation of boxplots of times by team, how spread changes each stage
-```{r}
-tdf_plot <- tdf_clean %>%
-  mutate(points = (sprint_pts + climb_pts), 
-         time = period_to_seconds(time))
-ggplot(data = tdf_plot, aes(x = team_name, y = time, color = classification)) +
-  geom_boxplot() +
-  coord_flip()
-ggplot(data = tdf_plot, aes(x = team_name, y = points)) +
-  geom_boxplot() +
-  coord_flip()
-ggplot(data = tdf_plot, aes(x = team_name, y = points, fill = classification)) +
-  geom_bar(stat = "identity") +
-  coord_flip()
-```
 
 ```{r}
 tdf_plot <- tdf_clean %>%
@@ -251,7 +236,7 @@ tdf_plot <- tdf_clean %>%
            rowSums())
 
 tdf_plot <- tdf_plot %>%
-  select(rider_name, stage, sprint_pts, climb_pts, total_pts)
+  select(rider_name, stage, sprint_pts, climb_pts, total_pts, classification)
 
 tdf_points <- pivot_wider(tdf_plot, id_cols = rider_name, names_from = stage, values_from = total_pts)
 
@@ -260,7 +245,10 @@ tdf_points <- tdf_points %>%
            rowSums()) %>%
   arrange(desc(all_pts)) %>%
   head(10)
+tdf_points
+```
 
+```{r}
 tdf_points_cumulative <- tdf_points %>%
     mutate(stage_0 = 0,
            stage_2 = select(., stage_1:stage_2) %>%
@@ -316,15 +304,51 @@ tdf_points_cumulative <- tdf_points_cumulative %>%
   mutate(stage = as.numeric(str_extract(stage, "\\d+")))
 ```
 
+
 ```{r}
-# Make a ggplot, but add frame=year: one image per year
+tdf_points_cumulative <- tdf_points_cumulative %>%
+  mutate(rider_name <- fct_relevel(rider_name, "Van Avermaet, Greg", "De Gendt, Thomas", "Trentin, Matteo", "Colbrelli, Sonny", "Ewan, Caleb", "Sagan, Peter", "Viviani, Elia", "Matthews, Michael", "Stuyven, Jasper", "Alaphilippe, Julian"))
+```
+
+```{r}
+tdf_points_cumulative %>%
+  filter(stage == 21) %>%
+  ggplot(aes(x = rider_name, y = points, fill = rider_name)) + 
+  geom_bar(stat="identity") +
+  theme_light() +
+  theme(plot.title = element_text(size=16, face="bold"),
+        plot.subtitle = element_text(color="gray45", size=12, face="bold.italic"),
+        axis.title.x = element_text(color="palegreen4", size=10, face="bold.italic"),
+        axis.title.y = element_text(color="palegreen4", size=10, face="bold.italic"),
+        axis.text.x = element_text(color="gray45", size=9, angle=35, hjust = 1),
+        legend.position = "none", 
+        axis.ticks = element_blank()) +
+  ylim(0, 325) +
+  scale_fill_manual(values = c("gray31", "gray31", "gray31", "gray31", "gray31", "lightgreen", "gray31", "gray31", "gray31", "gray31")) +
+  labs(title = "Green Jersey Winner Peter Sagan Establishes and Maintains Point Lead Early On In 2019 Tour De France", subtitle = "Stage", x = "Rider", y = "Points Earned")
+```
+
+
+
+
+
+```{r}
 ggplot(tdf_points_cumulative, aes(x = rider_name, y = points)) + 
   geom_bar(stat='identity') +
   theme_bw() +
-  # gganimate specific bits:
-  transition_states(stage, transition_length = 10, state_length = 1) +
-  ease_aes('sine-in-out') +
-  labs(title = 'Stage: {closest_state}')
+  theme_light() +
+  theme(plot.title = element_text(size=16, face="bold"),
+        plot.subtitle = element_text(color="gray45", size=12, face="bold.italic"),
+        axis.title.x = element_text(color="palegreen4", size=11, face="bold.italic"),
+        axis.title.y = element_text(color="palegreen4", size=11, face="bold.italic"),
+        axis.text.x = element_text(color="gray45", size=9, angle=35, hjust = 1),
+        legend.position = "none", 
+        axis.ticks = element_blank()) +
+  ylim(0, 325) +
+  scale_fill_manual(values = c("gray31", "gray31", "gray31", "gray31", "gray31", "lightgreen", "gray31", "gray31", "gray31", "gray31")) +
+  labs(title = "Green Jersey Winner Peter Sagan Establishes and Maintains Point Lead Early On In 2019 Tour De France", subtitle = "Stage {closest_state}", x = "Rider", y = "Points Earned") +
+  transition_states(stage, transition_length = 5, state_length = 3) +
+  ease_aes('linear')
 ```
 ease_aes('sine-in-out')
 
@@ -382,3 +406,6 @@ https://stackoverflow.com/questions/29006056/efficiently-sum-across-multiple-col
 
 https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/rank
 rank function
+
+https://www.r-graph-gallery.com/288-animated-barplot-transition.html
+animated bar graph

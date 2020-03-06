@@ -307,34 +307,6 @@ I decided to account for ties using the "minimum" method of function `rank()`, a
 
 Use the data to construct a single visualization that depicts something about the 2019 Tour de France. A single visualization can include subplots, but I do not want, for example, 10 unrelated graphics. Your visualization should be well-polished with a title that tells a story, and aesthetics, font size, and style should be carefully chosen. You may construct this visualization with the mindset that it would appear in a presentation. Thus, animations are okay to utilize.
 
--animation of boxplots of times by team, how spread changes each stage
-
-```r
-tdf_plot <- tdf_clean %>%
-  mutate(points = (sprint_pts + climb_pts), 
-         time = period_to_seconds(time))
-ggplot(data = tdf_plot, aes(x = team_name, y = time, color = classification)) +
-  geom_boxplot() +
-  coord_flip()
-```
-
-![](exam1_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
-
-```r
-ggplot(data = tdf_plot, aes(x = team_name, y = points)) +
-  geom_boxplot() +
-  coord_flip()
-```
-
-![](exam1_files/figure-html/unnamed-chunk-2-2.png)<!-- -->
-
-```r
-ggplot(data = tdf_plot, aes(x = team_name, y = points, fill = classification)) +
-  geom_bar(stat = "identity") +
-  coord_flip()
-```
-
-![](exam1_files/figure-html/unnamed-chunk-2-3.png)<!-- -->
 
 
 ```r
@@ -352,7 +324,7 @@ tdf_plot <- tdf_clean %>%
            rowSums())
 
 tdf_plot <- tdf_plot %>%
-  select(rider_name, stage, sprint_pts, climb_pts, total_pts)
+  select(rider_name, stage, sprint_pts, climb_pts, total_pts, classification)
 
 tdf_points <- pivot_wider(tdf_plot, id_cols = rider_name, names_from = stage, values_from = total_pts)
 
@@ -361,7 +333,31 @@ tdf_points <- tdf_points %>%
            rowSums()) %>%
   arrange(desc(all_pts)) %>%
   head(10)
+tdf_points
+```
 
+```
+# A tibble: 10 x 23
+   rider_name stage_1 stage_2 stage_3 stage_4 stage_5 stage_6 stage_7 stage_8
+   <chr>        <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
+ 1 Sagan, Pe…      50       0      26      28      40       0      33      27
+ 2 Ewan, Cal…      20       0       0      20       6       0      30       0
+ 3 Viviani, …       8       0      10      63      11       0      25      11
+ 4 Colbrelli…      33       0      21      11      23       0      33       8
+ 5 Matthews,…      27       0      32      16      22       1      18      28
+ 6 Trentin, …      23       0      15      15      22       0       0      15
+ 7 Stuyven, …       7       0      22      10       9       0      15       6
+ 8 De Gendt,…       0       0       0       0       5      19       0      76
+ 9 Alaphilip…       0       0      31       0       7      11       0      23
+10 Van Averm…      23       0      19       5      17       0       8      11
+# … with 14 more variables: stage_9 <dbl>, stage_10 <dbl>, stage_11 <dbl>,
+#   stage_12 <dbl>, stage_13 <dbl>, stage_14 <dbl>, stage_15 <dbl>,
+#   stage_16 <dbl>, stage_17 <dbl>, stage_18 <dbl>, stage_19 <dbl>,
+#   stage_20 <dbl>, stage_21 <dbl>, all_pts <dbl>
+```
+
+
+```r
 tdf_points_cumulative <- tdf_points %>%
     mutate(stage_0 = 0,
            stage_2 = select(., stage_1:stage_2) %>%
@@ -419,18 +415,58 @@ tdf_points_cumulative <- tdf_points_cumulative %>%
 ```
 
 
+
 ```r
-# Make a ggplot, but add frame=year: one image per year
+tdf_points_cumulative <- tdf_points_cumulative %>%
+  mutate(rider_name <- fct_relevel(rider_name, "Van Avermaet, Greg", "De Gendt, Thomas", "Trentin, Matteo", "Colbrelli, Sonny", "Ewan, Caleb", "Sagan, Peter", "Viviani, Elia", "Matthews, Michael", "Stuyven, Jasper", "Alaphilippe, Julian"))
+```
+
+
+```r
+tdf_points_cumulative %>%
+  filter(stage == 21) %>%
+  ggplot(aes(x = rider_name, y = points, fill = rider_name)) + 
+  geom_bar(stat="identity") +
+  theme_light() +
+  theme(plot.title = element_text(size=16, face="bold"),
+        plot.subtitle = element_text(color="gray45", size=12, face="bold.italic"),
+        axis.title.x = element_text(color="palegreen4", size=10, face="bold.italic"),
+        axis.title.y = element_text(color="palegreen4", size=10, face="bold.italic"),
+        axis.text.x = element_text(color="gray45", size=9, angle=35, hjust = 1),
+        legend.position = "none", 
+        axis.ticks = element_blank()) +
+  ylim(0, 325) +
+  scale_fill_manual(values = c("gray31", "gray31", "gray31", "gray31", "gray31", "lightgreen", "gray31", "gray31", "gray31", "gray31")) +
+  labs(title = "Green Jersey Winner Peter Sagan Establishes and Maintains Point Lead Early On In 2019 Tour De France", subtitle = "Stage", x = "Rider", y = "Points Earned")
+```
+
+![](exam1_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+
+
+
+
+
+
+```r
 ggplot(tdf_points_cumulative, aes(x = rider_name, y = points)) + 
   geom_bar(stat='identity') +
   theme_bw() +
-  # gganimate specific bits:
-  transition_states(stage, transition_length = 10, state_length = 1) +
-  ease_aes('sine-in-out') +
-  labs(title = 'Stage: {closest_state}')
+  theme_light() +
+  theme(plot.title = element_text(size=16, face="bold"),
+        plot.subtitle = element_text(color="gray45", size=12, face="bold.italic"),
+        axis.title.x = element_text(color="palegreen4", size=11, face="bold.italic"),
+        axis.title.y = element_text(color="palegreen4", size=11, face="bold.italic"),
+        axis.text.x = element_text(color="gray45", size=9, angle=35, hjust = 1),
+        legend.position = "none", 
+        axis.ticks = element_blank()) +
+  ylim(0, 325) +
+  scale_fill_manual(values = c("gray31", "gray31", "gray31", "gray31", "gray31", "lightgreen", "gray31", "gray31", "gray31", "gray31")) +
+  labs(title = "Green Jersey Winner Peter Sagan Establishes and Maintains Point Lead Early On In 2019 Tour De France", subtitle = "Stage {closest_state}", x = "Rider", y = "Points Earned") +
+  transition_states(stage, transition_length = 5, state_length = 3) +
+  ease_aes('linear')
 ```
 
-![](exam1_files/figure-html/unnamed-chunk-5-1.gif)<!-- -->
+![](exam1_files/figure-html/unnamed-chunk-7-1.gif)<!-- -->
 ease_aes('sine-in-out')
 
 labs(title = 'Year: {frame_time}', x = 'GDP per capita', y = 'Life expectancy') +
@@ -528,3 +564,6 @@ https://stackoverflow.com/questions/29006056/efficiently-sum-across-multiple-col
 
 https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/rank
 rank function
+
+https://www.r-graph-gallery.com/288-animated-barplot-transition.html
+animated bar graph
