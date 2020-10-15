@@ -1,5 +1,3 @@
-# STA 323 :: Exam 1
-
 ## Introduction
 
 The Tour de France is a multi-stage bike race held annually in July. The race
@@ -125,65 +123,3 @@ You may construct this visualization with the mindset
 that it would appear in a presentation. Thus, animations are okay to utilize.
 
 <br/>
-
-## Essential details
-
-#### Deadline and submission
-
-**The deadline to submit Exam 1 is 5:00pm on Friday, March 6.** 
-Only the code in the master branch will be graded.
-
-#### Rules
-
-**Phase I**: Data understanding, Friday, Feb 28 at 5:00pm - Monday, Mar 
-             2 at 5:00pm
-
-**Phase II**: Tasks, Monday, Mar 2 at 5:00pm - Friday, Mar 6 at 5:00pm
-
-- This is an individual assignment.
-
-- Everything in your repository is for your eyes only except for the 
-  instructor and TAs.
-
-- You may not communicate anything about this exam to anyone.
-
-- You may use any online, book, and note resources. As always, you must cite 
-  any code you use as inspiration.
-
-- During Phase I, post any questions about the data to channel #exam1 on Slack. 
-  During Phase II, only send direct messages to the instructor on Slack. 
-  Questions should only be about understanding the data or the exam's 
-  instructions.
-
-#### git / GitHub
-
-You will only have one branch to start with in your repository - master. 
-You may create other branches as needed, but only your work in the master 
-branch will be graded. Be sure to push your work before the deadline.
-
-#### Academic integrity
-
-This is an individual assignment. See the Rules section above.
-As a reminder, any code you use directly or as inspiration must be cited.
-
-To uphold the Duke Community Standard:
-
-- I will not lie, cheat, or steal in my academic endeavors;
-- I will conduct myself honorably in all my endeavors; and
-- I will act if the Standard is compromised.
-
-#### Grading
-
-A portion of the total points for each task will be allocated towards
-efficiency and code style. The most important thing is that you get the
-correct result.
-
-**Topic**|**Points**
----------|----------:|
-Task 1   |  20
-Task 2.1 |   7
-Task 2.2 |  13
-Task 3   |  20
-**Total**|**60**
-
-*Documents that fail to knit after minimal intervention will receive a 0*.
